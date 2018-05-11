@@ -8,12 +8,13 @@
 
 ## Why is this useful?
 
-A remote application connect to an RPC doesn't expose many features and has no built in authentication. This is a layer to add some of that. Any features available in Rails could be used with this router as a departure point. Things such as
+A an application connection to an RPC doesn't expose many features and has no built in authentication. This is a layer to add some of that. Any features available in Rails could be used with this router as a departure point. Things such as
 
 * Authentication with API tokens
 * Oauth or SAML security
-* Possible API transformations to extend the web3 specification
+* API transformations to extend the web3 specification
 * One gateway to many backend networks (Mainnet, various testing networks, private blockchains)
+* Do "blockchain stuff" in a relational database
 
 ## API endpoint mapping
 
