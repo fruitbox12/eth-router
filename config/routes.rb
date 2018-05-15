@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  resources :users
   namespace :geth do
     namespace :v1 do
       post 'ropsten', to: 'base#ropsten'
