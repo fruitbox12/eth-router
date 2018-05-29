@@ -28,6 +28,22 @@ Kovan: `/{applicaton}/kovan`
 Rinkeby: `/{applicaton}/rinkeby`  
 Dev RPC: `/{application}/development`
 
+# node.js stuff
+
+HTTPS is not supported with geth but it can be tested with sending raw JSON data with a self-signed certificate via cURL. Production deployment will use a verified cert.
+
+The following returns the sync status of the node
+
+```
+curl -k -X POST -H "Content-Type: application/json" --data '{"jsonrpc":"2.0","method":"eth_syncing","params":[],"id":74}' https://localhost:9000
+```
+
+To generate self-signed certs, run the script in `ssl/gen-self-signed.sh`
+
+The confusingly named Web3 HttpProvider also supports HTTPS. Just pass it an HTTPS URL and it "just works". [Documentation on medium](https://blog.infura.io/getting-started-with-infura-28e41844cc89).
+
+# Rails stuff
+
 ## Adding a new endpoint
 
 For example, a new network named `casper` for the geth application using HTTP protocol
@@ -48,7 +64,7 @@ Install geth and/or parity.
 
 Enable a geth node as a Proof of Authority development node on localhost
 
-`geth --dev --rpc`
+`geth --dev --rpc --rpcapi=personal,web3,eth,rpc`
 
 Get Ruby 2.5.1. I recommend `chruby` and `ruby-install`. Install dependencies. Start server. Connect geth.
 
