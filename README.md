@@ -35,7 +35,7 @@ HTTPS is not supported with geth but it can be tested with sending raw JSON data
 The following returns the sync status of the node
 
 ```
-curl -k -X POST -H "Content-Type: application/json" --data '{"jsonrpc":"2.0","method":"eth_syncing","params":[],"id":74}' https://localhost:9000
+curl -k -X POST -H "Content-Type: application/json" --data '{"jsonrpc":"2.0","method":"eth_syncing","params":[],"id":74}' https://localhost:9001
 ```
 
 To generate self-signed certs, run the script in `ssl/gen-self-signed.sh`

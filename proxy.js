@@ -8,16 +8,15 @@ var http = require('http'),
 
 const querystring = require('querystring');
 
-/*
- * web3 library support for SSL is not supported for self-signed certificates
+// web3 library support for SSL is not supported for self-signed certificates
+// cURL is. See README for details.
 httpProxy.createServer({
   target: 'http://localhost:8545',
   ssl: {
     key: fs.readFileSync('ssl/key.pem', 'utf8'),
     cert: fs.readFileSync('ssl/cert.pem', 'utf8')
   }
-}).listen(9000);
-*/
+}).listen(9001);
 
 var tokenRecord = 'foo';
 var proxy = httpProxy.createProxyServer({ ws: true });
