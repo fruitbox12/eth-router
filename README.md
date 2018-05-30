@@ -30,7 +30,9 @@ Dev RPC: `/{application}/development`
 
 # node.js stuff
 
-HTTPS is not supported with geth but it can be tested with sending raw JSON data with a self-signed certificate via cURL. Production deployment will use a verified cert.
+The file `proxy.js` is a very small node application that does reverse proxying. It supports the WebSocket 'upgrade' event to server two protocols over the same connection. It also supports SSL termination for HTTPS on the frontend and HTTP on the back.
+
+HTTPS with a self-signed certificate is not supported with geth as of `1.8.4-unstable` but it can be tested by sending raw JSON data with a self-signed certificate via cURL. Production deployment will use a verified cert.
 
 The following returns the sync status of the node
 
@@ -41,6 +43,17 @@ curl -k -X POST -H "Content-Type: application/json" --data '{"jsonrpc":"2.0","me
 To generate self-signed certs, run the script in `ssl/gen-self-signed.sh`
 
 The confusingly named Web3 HttpProvider also supports HTTPS. Just pass it an HTTPS URL and it "just works". [Documentation on medium](https://blog.infura.io/getting-started-with-infura-28e41844cc89).
+
+## Let's Encrypt
+
+SSL certificates can be served via let's encrypt. Here's how...
+
+* Install [Certbot](https://certbot.eff.org/lets-encrypt/ubuntuxenial-other)
+* Generate a certificate with the `certonly` mode for a "standalone" webserver
+* If there is an error, ensure port 80 is open to the public internet
+* Copy certificates to `./ssl/`
+* Update `proxy.js` to read signed certificates
+* A cron job was installed to automatically renew. To manually verify expiration time, run `sudo certbot renew --dry-run`
 
 # Rails stuff
 
