@@ -65,7 +65,7 @@ proxyServer.on('upgrade', function(req,socket,head) {
   }
 });
 
+//proxyServer.listen(9000);
+//console.log("listening on HTTP port 9000");
 secureProxyServer.listen(9001);
-proxyServer.listen(9000);
-console.log("listening on HTTP port 9000");
 console.log("listening on HTTPS port 9001");
