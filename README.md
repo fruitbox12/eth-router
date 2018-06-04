@@ -47,14 +47,16 @@ The confusingly named Web3 HttpProvider also supports HTTPS. Just pass it an HTT
 Secure WebSocket connections are also difficult to test with local self-signed certificates. You can get almost across the line with the following baroque dance using cURL with custom headers and self-signed certificates.
 
 ```
-curl -v -k --include \
+curl -v -k -X POST --include \
      --no-buffer \
+     --header "Content-type: application/json" \
      --header "Connection: Upgrade" \
      --header "Upgrade: websocket" \
      --header "Host: localhost:9001" \
      --header "Origin: https://localhost:9001" \
      --header "Sec-WebSocket-Key: SGVsbG8sIHdvcmxkIQ==" \
      --header "Sec-WebSocket-Version: 13" \
+     --data '{"jsonrpc":"2.0","method":"eth_syncing","params":[],"id":74}' \
      https://localhost:9001/?token=foo
 ```
 
