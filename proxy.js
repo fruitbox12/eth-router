@@ -22,11 +22,19 @@ secureProxyServer = httpProxy.createServer(
 // this is an event called proxyReq. It is called after the TLS handshake and before passing the request to the backend. This is where token authentication should happen
 secureProxyServer.on('proxyReq', function(proxyReq, req, res, options) {
   var query = url.parse(req.url, true).query;
-  console.log("Got HTTPS request with token " + query['token'])
+  //console.log("Got HTTPS request with token " + query['token'])
   if ( query['token'] !== tokenRecord) {
     res.write('access denied');
     res.end();
   }
+});
+
+secureProxyServer.on('upgrade', function(req,socket,head) {
+  var proxy = httpProxy.createProxyServer({
+    ws: true
+  });
+  //var query = url.parse(req.url, true).query;
+  proxy.ws(req,socket,head, {target: 'ws://localhost:8546'});
 });
 
 var proxy = httpProxy.createProxyServer({ ws: true });

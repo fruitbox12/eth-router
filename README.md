@@ -44,6 +44,22 @@ To generate self-signed certs, run the script in `ssl/gen-self-signed.sh`
 
 The confusingly named Web3 HttpProvider also supports HTTPS. Just pass it an HTTPS URL and it "just works". [Documentation on medium](https://blog.infura.io/getting-started-with-infura-28e41844cc89).
 
+Secure WebSocket connections are also difficult to test with local self-signed certificates. You can get almost across the line with the following baroque dance using cURL with custom headers and self-signed certificates.
+
+```
+curl -v -k --include \
+     --no-buffer \
+     --header "Connection: Upgrade" \
+     --header "Upgrade: websocket" \
+     --header "Host: localhost:9001" \
+     --header "Origin: https://localhost:9001" \
+     --header "Sec-WebSocket-Key: SGVsbG8sIHdvcmxkIQ==" \
+     --header "Sec-WebSocket-Version: 13" \
+     https://localhost:9001/?token=foo
+```
+
+The response should look something like `invalid content type, only application/json is supported` which meant that cURL connected to the RPC and got a response that it sent the wrong content-type! Great success!
+
 ## Let's Encrypt
 
 SSL certificates can be served via let's encrypt. Here's how...
