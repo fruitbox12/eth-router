@@ -8,6 +8,16 @@ resource "aws_instance" "rpc_proxy" {
   instance_type = "t2.micro"
   security_groups = ["allow_all"]
   key_name = "${var.key_name}"
+  provisioner "remote-exec" {
+    inline = ["sudo apt-get update",
+              "sudo apt-get install -y python"
+    ]
+    connection {
+      type = "ssh"
+      user = "ubuntu"
+      agent = true
+    }
+  }
 }
 
 resource "aws_eip" "ip" {
@@ -27,6 +37,13 @@ resource "aws_security_group" "allow_all" {
     to_port     = 0
     protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  egress {
+    from_port       = 0
+    to_port         = 0
+    protocol        = "-1"
+    cidr_blocks     = ["0.0.0.0/0"]
   }
 
   tags {
