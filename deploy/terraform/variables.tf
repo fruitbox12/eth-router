@@ -4,6 +4,9 @@ variable "key_name" {}
 variable "region" {
   default = "us-west-2"
 }
+variable "zone_id" {
+  default = "Z1P0T0PQYB133B"
+}
 
 variable "amis" {
   type = "map"
