@@ -5,5 +5,20 @@
   become: yes
   become_method: sudo
 
+  vars:
+    certbot_auto_renew_user: www-data
+    certbot_auto_renew_minute: 20
+    certbot_auto_renew_hour: 5
+    certbot_install_from_source: true
+    certbot_create_if_missing: true
+    certbot_create_method: standalone
+    certbot_admin_email: lee@quantstamp.com
+    ssl_hostname: "rpc.blockchaindevlabs.com"
+    certbot_certs:
+      - domains:
+        - "{{ ssl_hostname }}"
+    aws_profile: "kops"
+
   roles:
     - nginx
+    - geerlingguy.certbot

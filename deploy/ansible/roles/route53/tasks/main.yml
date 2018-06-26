@@ -1,0 +1,12 @@
+---
+- name: Create a DNS record in Route53
+  route53:
+    profile: "{{ aws_profile }}"
+    command: create
+    zone: "quantstamp.com"
+    record: "{{ ssl_hostname }}"
+    type: A
+    ttl: 300
+    value: "{{ ansible_default_ipv4.address }}"
+    wait: yes
+    overwrite: yes
