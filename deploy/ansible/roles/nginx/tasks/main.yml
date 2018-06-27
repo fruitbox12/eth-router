@@ -5,24 +5,3 @@
 - name: Copy configuration for Nginx proxy
   template: src=default.conf dest=/etc/nginx/conf.d/default.conf
   notify: Restart Nginx
-
-# this is most likely obsolete by the certbot role but keeping it here for now
-#- name: Start SSL Challenge
-#  letsencrypt:
-#    account_key: /etc/ssl/private/{{ ssl_hostname }}.key
-#    csr: /tmp/{{ ssl_hostname }}.csr
-#    dest: /etc/nginx/ssl/{{ ssl_hostname }}.crt
-#  register: current_challenge
-
-#- name: Copy challenge data to www server
-#  copy:
-#    dest: /var/www/html/{{ current_challenge['challenge_data']['sample.com']['http-01']['resource'] }}
-#    content: "{{ current_challenge['challenge_data']['sample.com']['http-01']['resource_value'] }}"
-#    when: current_challenge|changed
-
-#- name: Verify SSL Challenge
-#  letsencrypt:
-#    account_key: /etc/ssl/private/{{ ssl_hostname }}.key
-#    csr: /tmp/{{ ssl_hostname}}.csr
-#    dest: /etc/nginx/ssl/{{ ssl_hostname }}.crt
-#    data: "{{ current_challenge }}"

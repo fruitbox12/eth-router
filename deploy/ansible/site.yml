@@ -17,8 +17,8 @@
     certbot_certs:
       - domains:
         - "{{ ssl_hostname }}"
-    aws_profile: "kops"
+    certbot_path: "/etc/letsencrypt/live/{{ ssl_hostname}}"
 
   roles:
-    - nginx
     - geerlingguy.certbot
+    - nginx
