@@ -1,0 +1,14 @@
+[Unit]
+Description=Parity Ethereum application (full archive)
+Requires=network.target
+
+[Service]
+Type=simple
+User={{ geth_user }} 
+Restart=on-failure
+ExecStart=/usr/bin/parity --tracing on --pruning archive \
+       --base-path /home/ubuntu/blockchains/parity/archives \
+       --no-jsonrpc --no-ws --no-ui --port 30305
+
+[Install]
+WantedBy=default.target

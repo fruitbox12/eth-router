@@ -1,0 +1,15 @@
+---
+- name: Install parity archive systemd service
+  template:
+    src: parity-archive.service
+    dest: /lib/systemd/system/parity-archive.service
+    owner: root
+    group: root
+    mode: 0644
+
+- name: Start parity archive systemd service
+  systemd: 
+    daemon_reload: yes
+    state: started
+    enabled: true
+    name: parity-archive.service

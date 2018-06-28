@@ -1,0 +1,17 @@
+[Unit]
+Description=Parity Ethereum application
+Requires=network.target
+
+[Service]
+Type=simple
+User={{ geth_user }} 
+Restart=on-failure
+ExecStart=/usr/bin/parity --port 30304 --no-ws \
+       --jsonrpc-port 8547 --jsonrpc-interface 127.0.0.1 \
+       --jsonrpc-cors all --jsonrpc-hosts all \
+       --jsonrpc-apis=safe,personal,-parity \
+       --db-path=/home/ubuntu/blockchains/parity/chains/ \
+       --no-warp
+
+[Install]
+WantedBy=default.target
