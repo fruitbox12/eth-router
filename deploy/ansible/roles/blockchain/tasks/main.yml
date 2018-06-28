@@ -13,7 +13,7 @@
     state: present
     update_cache: true
 
-# should probably put something here about creating the data directory if it is not present
+# TODO: put something here about creating the data directory if it is not present
 
 - name: Install geth systemd service
   template:
@@ -22,7 +22,8 @@
     owner: root
     group: root
     mode: 0644
-
+# TODO: register a service and create a handler
+    
 - name: Start geth systemd service
   systemd: 
     daemon_reload: yes
