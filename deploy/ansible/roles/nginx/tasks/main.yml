@@ -1,6 +1,6 @@
 ---
 - name: Install Nginx
-  apt: pkg=nginx state=installed update_cache=true
+  apt: pkg=nginx state=present update_cache=true
 
 - name: Copy configuration for Nginx proxy
   template: src=default.conf dest=/etc/nginx/conf.d/default.conf

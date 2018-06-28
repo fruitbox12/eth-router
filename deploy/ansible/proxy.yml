@@ -1,6 +1,6 @@
 ---
 - name: Install a full ethereum RPC proxy with SSL and token auth
-  hosts: all
+  hosts: proxy
   remote_user: ubuntu
   become: yes
   become_method: sudo
