@@ -20,14 +20,14 @@ A an application connection to an RPC has no built in authentication or transpor
 
 ## API endpoint mapping
 
-`{application}` = "geth", "parity"  
-`{proto}` = "wss", "https"  
+`{application}` = "geth", "parity"
+`{proto}` = "wss", "https"
 
-domain: `{proto}://eth.example.com`  
-Foundation (mainnet) location: `/{application}/mainnet`  
-Ropsten: `/{applicaton}/ropsten`  
-Kovan: `/{applicaton}/kovan`  
-Rinkeby: `/{applicaton}/rinkeby`  
+domain: `{proto}://eth.example.com`
+Foundation (mainnet) location: `/{application}/mainnet`
+Ropsten: `/{applicaton}/ropsten`
+Kovan: `/{applicaton}/kovan`
+Rinkeby: `/{applicaton}/rinkeby`
 Dev RPC: `/{application}/development`
 
 # node.js stuff
@@ -90,18 +90,33 @@ The ports start at TCP `8545` for the default development route and go up from t
 
 ## Development and Testing
 
-Install geth and/or parity.
+### Install
 
-Enable a geth node as a Proof of Authority development node on localhost
+* Install geth and/or parity: https://geth.ethereum.org/downloads/
+* Install node v. 10.4.0: https://nodejs.org/en/
+* Install yarn: https://yarnpkg.com/lang/en/docs/install/
+* Install node dependencies: `yarn install`
 
-`geth --dev --rpc --rpcapi=personal,web3,eth,rpc`
+(TK-TODO: provide bash scripts for doing this in either MacOs or Debian-like Linux)
 
-Get node.js v10.0.0
+### Run
 
+You will need 3 console terminals! To run each of these 3 processes:
+
+1. Start a geth node in development mode on localhost (it will act as Proof of Authority):
+
+``` shell
+$ ./bin/run-geth-dev
 ```
-brew install nodejs
-npm install
-npm run
-```
 
-In another shell connect to a console with `geth attach http://localhost:3000/geth/development`
+2. Start a proxy server filtering requests to the geth node:
+
+``` shell
+$ ./bin/run-proxy-dev
+```
+(As a smoke test, use the SecureWebsocket connection curl script above to make sure the proxy is working.)
+
+3. Attach a console to the running geth node (use it to test your proxy!):
+``` shell
+$ ./bin/run-get-dev-console
+```

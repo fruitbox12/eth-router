@@ -1,0 +1,19 @@
+{
+  "name": "eth-router",
+  "version": "0.0.1",
+  "main": "proxy.js",
+  "repository": "git@github.com:lazzarello/eth-router.git",
+  "author": "lazarello",
+  "license": "GPL-3.0-or-later",
+  "private": false,
+  "engines": {
+    "node": "10.4.0"
+  },
+  "dependencies": {
+    "http": "^0.0.0",
+    "http-proxy": "^1.17.0"
+  },
+  "scripts" : {
+    "start": "node src/proxy.js"
+  }
+}
