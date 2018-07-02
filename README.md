@@ -1,25 +1,27 @@
-# Eth-router
+# eth-router
 
-*A HTTP router to add API features to Ethereum RPC interfaces*
+*A secure RPC proxy to an Ethereum blockchain*
 
-* Built with Ruby 2.5.1 and Rails 5.1.6
-* Reverse proxying in Rack via rails-reverse-proxy
-* Bootstrapped with `rails new eth-router --api`, depends on one or many full synced ethereum applications that provide a HTTP interface (geth and Parity are the ones that exist as of this writing)
+* Built with node.js
+* Reverse proxying via node-http-proxy
+* Infrastructure modeled in Terraform
+* Bootstrapped with Anslble playbooks
+* TLS using Let's Encrypt
+* Supports HTTPS and WebSockets
 
 ## Why is this useful?
 
-A an application connection to an RPC doesn't expose many features and has no built in authentication. This is a layer to add some of that. Any features available in Rails could be used with this router as a departure point. Things such as
+A an application connection to an RPC has no built in authentication or transport layer security. By adding a SSL terminator with a CA signed certificate from Let's Encrypt and a reverse proxy in node.js, the following features could be built
 
 * Authentication with API tokens
 * Oauth or SAML security
 * API transformations to extend the web3 specification
 * One gateway to many backend networks (Mainnet, various testing networks, private blockchains)
-* Do "blockchain stuff" in a relational database
 
 ## API endpoint mapping
 
 `{application}` = "geth", "parity"  
-`{proto}` = "ws", "http"  
+`{proto}` = "wss", "https"  
 
 domain: `{proto}://eth.example.com`  
 Foundation (mainnet) location: `/{application}/mainnet`  
@@ -30,14 +32,14 @@ Dev RPC: `/{application}/development`
 
 # node.js stuff
 
-The file `proxy.js` is a very small node application that does reverse proxying. It supports the WebSocket 'upgrade' event to server two protocols over the same connection. It also supports SSL termination for HTTPS on the frontend and HTTP on the back.
+The file `proxy.js` is a very small node application that does reverse proxying. It supports the WebSocket 'upgrade' event to serve two protocols over the same connection. It also supports SSL termination for HTTPS on the frontend and HTTP on the back.
 
 HTTPS with a self-signed certificate is not supported with geth as of `1.8.4-unstable` but it can be tested by sending raw JSON data with a self-signed certificate via cURL. Production deployment will use a verified cert.
 
 The following returns the sync status of the node
 
 ```
-curl -k -X POST -H "Content-Type: application/json" --data '{"jsonrpc":"2.0","method":"eth_syncing","params":[],"id":74}' https://localhost:9001
+curl -k -X POST -H "Content-Type: application/json" --data '{"jsonrpc":"2.0","method":"eth_syncing","params":[],"id":74}' https://localhost:3000
 ```
 
 To generate self-signed certs, run the script in `ssl/gen-self-signed.sh`
@@ -52,15 +54,23 @@ curl -v -k -X POST --include \
      --header "Content-type: application/json" \
      --header "Connection: Upgrade" \
      --header "Upgrade: websocket" \
-     --header "Host: localhost:9001" \
-     --header "Origin: https://localhost:9001" \
+     --header "Host: localhost:3000" \
+     --header "Origin: https://localhost:3000" \
      --header "Sec-WebSocket-Key: SGVsbG8sIHdvcmxkIQ==" \
      --header "Sec-WebSocket-Version: 13" \
      --data '{"jsonrpc":"2.0","method":"eth_syncing","params":[],"id":74}' \
-     https://localhost:9001/?token=foo
+     https://localhost:3000/?token=foo
 ```
 
 The response should look something like `invalid content type, only application/json is supported` which meant that cURL connected to the RPC and got a response that it sent the wrong content-type! Great success!
+
+## Infrastructure
+
+The `deploy` directory has a Terraform template which will build a server instance in AWS, create security groups and attach a domain name. (look in the configuration for details)
+
+When the instance is online, you can bootstrap the node with the Ansible playbook named `proxy.yml`. This will generate a SSL certificate for the domain you specify in the file.
+
+If you would like to manually generate the certificate, read the next section.
 
 ## Let's Encrypt
 
@@ -73,17 +83,6 @@ SSL certificates can be served via let's encrypt. Here's how...
 * Update `proxy.js` to read signed certificates
 * A cron job was installed to automatically renew. To manually verify expiration time, run `sudo certbot renew --dry-run`
 
-# Rails stuff
-
-## Adding a new endpoint
-
-For example, a new network named `casper` for the geth application using HTTP protocol
-
-`rails generate controller Geth casper`
-
-Add a route to `routes.rb` allowing  POST to that controller, like
-
-`post 'geth/casper'`
 
 ## Port mapping
 
@@ -97,13 +96,12 @@ Enable a geth node as a Proof of Authority development node on localhost
 
 `geth --dev --rpc --rpcapi=personal,web3,eth,rpc`
 
-Get Ruby 2.5.1. I recommend `chruby` and `ruby-install`. Install dependencies. Start server. Connect geth.
+Get node.js v10.0.0
 
 ```
-ruby-install ruby 2.5.1
-chruby 2.5.1
-bundle install
-rails server
+brew install nodejs
+npm install
+npm run
 ```
 
 In another shell connect to a console with `geth attach http://localhost:3000/geth/development`
