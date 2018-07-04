@@ -25,3 +25,5 @@ node_modules
 *.tfstate
 hosts
 *.retry
+
+.idea/
