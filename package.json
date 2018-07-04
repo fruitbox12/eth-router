@@ -9,11 +9,18 @@
   "engines": {
     "node": "10.4.0"
   },
+  "scripts": {
+    "start": "node src/index.js",
+    "test": "NODE_ENV=test mocha --reporter spec 'test/**/*.spec.js'"
+  },
   "dependencies": {
     "http": "^0.0.0",
-    "http-proxy": "^1.17.0"
+    "http-proxy": "^1.17.0",
+    "url": "^0.11.0"
   },
-  "scripts" : {
-    "start": "node src/index.js"
+  "devDependencies": {
+    "chai": "^4.1.2",
+    "mocha": "^5.2.0",
+    "supertest": "^3.1.0"
   }
 }
