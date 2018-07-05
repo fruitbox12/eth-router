@@ -8,7 +8,7 @@ User={{ geth_user }}
 Restart=on-failure
 ExecStart=/usr/bin/parity --tracing on --pruning archive \
        --base-path /home/ubuntu/blockchains/parity/archives \
-       --no-jsonrpc --no-ws --no-ui --port 30305
+       --no-jsonrpc --no-ws --no-ui --port {{ p2p }}
 
 [Install]
 WantedBy=default.target

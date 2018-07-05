@@ -31,6 +31,9 @@
     group: root
     mode: 0644
   with_items: "{{ blockchain_apps }}"
+  vars:
+    - sport: "{{ item.sport }}"
+    - p2p: "{{ item.p2p }}"
 
 - name: Start blockchain systemd services
   systemd: 
