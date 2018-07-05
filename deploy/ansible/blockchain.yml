@@ -19,10 +19,6 @@
     geth_rpccorsdomain: "*"
     geth_rpcvhosts: "*"
     parity_version: "1.11.4"
-    networks:
-      - "mainnet"
-      - "ropsten"
-      - "mainnet-archive"
     blockchain_apps:
       - { name: "geth", sport: "8545", dport: "8555", network: "ropsten", p2p: "30303" }
       - { name: "parity", sport: "8547", dport: "8556", network: "mainnet", p2p: "30304"}
