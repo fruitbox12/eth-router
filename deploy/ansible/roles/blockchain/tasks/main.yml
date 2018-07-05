@@ -71,13 +71,13 @@
     group: root
     mode: 0644
 
-#- name: Install private key for tunnels
-#  copy:
-#    src: geth-http
-#    dest: /etc/ssh/geth-http
-#    owner: root
-#    group: root
-#    mode: 0600
+- name: Install private key for tunnels
+  copy:
+    src: geth-http
+    dest: /etc/ssh/geth-http
+    owner: root
+    group: root
+    mode: 0600
 
 - name: Start ssh tunnel systemd service
   systemd: 
