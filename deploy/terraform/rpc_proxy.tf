@@ -53,7 +53,7 @@ resource "aws_security_group" "allow_all" {
 
 resource "aws_route53_record" "rpc" {
   zone_id = "${var.zone_id}"
-  name    = "rpc.blockchaindevlabs.com"
+  name    = "${var.dns_name}"
   type    = "A"
   ttl     = "300"
   records = ["${aws_eip.ip.public_ip}"]
