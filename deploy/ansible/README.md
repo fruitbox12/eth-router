@@ -21,6 +21,9 @@ The playbook uses the [certbot role](https://github.com/geerlingguy/ansible-role
 
 TODO: document DNS situation
 
+## SSH Tunnels
+
+TODO: VPN stuff for exposing an RPC over a private network, auth, key validation
 
 
 

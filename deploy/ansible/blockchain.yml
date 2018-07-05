@@ -19,6 +19,11 @@
     geth_rpccorsdomain: "*"
     geth_rpcvhosts: "*"
     parity_version: "1.11.4"
+    networks:
+      - "mainnet"
+      - "ropsten"
+      - "mainnet-archive"
+
   roles:
     - blockchain
     - parity-archive

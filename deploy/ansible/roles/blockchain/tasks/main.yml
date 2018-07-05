@@ -66,10 +66,11 @@
 - name: Install secure-tunnel defaults
   template:
     src: secure-tunnel-defaults
-    dest: /etc/default/secure-tunnel@mainnet
+    dest: /etc/default/secure-tunnel@{{ item }}
     owner: root
     group: root
     mode: 0644
+  with_items: "{{ networks }}"
 
 - name: Install private key for tunnels
   copy:
@@ -84,4 +85,5 @@
     daemon_reload: yes
     state: started
     enabled: true
-    name: secure-tunnel@mainnet.service
+    name: secure-tunnel@{{ item }}.service
+  with_items: "{{ networks }}"
