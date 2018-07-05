@@ -12,46 +12,33 @@
     pkg: ethereum
     state: present
     update_cache: true
-
-# TODO: put something here about creating the data directory if it is not present
-
-- name: Install geth systemd service
-  template:
-    src: geth.service
-    dest: /lib/systemd/system/geth.service
-    owner: root
-    group: root
-    mode: 0644
-# TODO: register a service and create a handler
-    
-- name: Start geth systemd service
-  systemd: 
-    daemon_reload: yes
-    state: started
-    enabled: true
-    name: geth.service
-
-# Parity time!
+   
 - name: Install Parity package
   apt:
     deb: "https://releases.parity.io/v{{ parity_version }}/x86_64-unknown-linux-gnu/parity_{{ parity_version}}_ubuntu_amd64.deb"
     state: present
     update_cache: true
 
-- name: Install parity systemd service
+# TODO: put something here about creating the data directory if it is not present
+
+# TODO: register a service and create a handler
+ 
+- name: Install blockchain systemd services
   template:
-    src: parity.service
-    dest: /lib/systemd/system/parity.service
+    src: "{{ item }}.service"
+    dest: /lib/systemd/system/{{ item }}.service
     owner: root
     group: root
     mode: 0644
+  with_items: "{{ blockchain_apps }}"
 
-- name: Start parity systemd service
+- name: Start blockchain systemd services
   systemd: 
     daemon_reload: yes
     state: started
     enabled: true
-    name: parity.service
+    name: "{{ item }}.service"
+  with_items: "{{ blockchain_apps }}"
 
 # Reverse SSH tunnel time!
 

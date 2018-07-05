@@ -23,7 +23,10 @@
       - "mainnet"
       - "ropsten"
       - "mainnet-archive"
+    blockchain_apps:
+      - "parity"
+      - "parity-archive"
+      - "geth"
 
   roles:
     - blockchain
-    - parity-archive
