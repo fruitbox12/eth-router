@@ -25,8 +25,8 @@
  
 - name: Install blockchain systemd services
   template:
-    src: "{{ item }}.service"
-    dest: /lib/systemd/system/{{ item }}.service
+    src: "{{ item.name }}.service"
+    dest: /lib/systemd/system/{{ item.name }}.service
     owner: root
     group: root
     mode: 0644
@@ -37,7 +37,7 @@
     daemon_reload: yes
     state: started
     enabled: true
-    name: "{{ item }}.service"
+    name: "{{ item.name }}.service"
   with_items: "{{ blockchain_apps }}"
 
 # Reverse SSH tunnel time!
@@ -53,16 +53,19 @@
 - name: Install secure-tunnel defaults
   template:
     src: secure-tunnel-defaults
-    dest: /etc/default/secure-tunnel@{{ item }}
+    dest: /etc/default/secure-tunnel@{{ item.network }}
     owner: root
     group: root
     mode: 0644
-  with_items: "{{ networks }}"
+  with_items: "{{ blockchain_apps }}"
+  vars:
+    - dport: "{{ item.dport }}"
+    - sport: "{{ item.sport }}"
 
 - name: Install private key for tunnels
   copy:
     src: geth-http
-    dest: /etc/ssh/geth-http
+    dest: /etc/ssh/{{ private_key_name }}
     owner: root
     group: root
     mode: 0600
@@ -72,5 +75,5 @@
     daemon_reload: yes
     state: started
     enabled: true
-    name: secure-tunnel@{{ item }}.service
-  with_items: "{{ networks }}"
+    name: secure-tunnel@{{ item.network }}.service
+  with_items: "{{ blockchain_apps }}"

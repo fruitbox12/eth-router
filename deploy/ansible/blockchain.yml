@@ -24,9 +24,11 @@
       - "ropsten"
       - "mainnet-archive"
     blockchain_apps:
-      - "parity"
-      - "parity-archive"
-      - "geth"
+      - { name: "geth", sport: "8545", dport: "8555", network: "ropsten" }
+      - { name: "parity", sport: "8547", dport: "8556", network: "mainnet"}
+      - { name: "parity-archive", sport: "8546", dport: "8557", network: "mainnet-archive"}
+    private_key_name: "geth-http"
+    ssh_hostname: "eth.quantstamp.com"
 
   roles:
     - blockchain

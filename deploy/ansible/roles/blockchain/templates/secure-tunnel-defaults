@@ -1,5 +1,5 @@
-TARGET=
-PRIVATE_KEY=
-USERNAME=
-REMOTE_PORT=
-LOCAL_PORT=
+TARGET={{ ssh_hostname }}
+PRIVATE_KEY={{ private_key_name }}
+USERNAME={{ geth_user }}
+REMOTE_PORT={{ dport }}
+LOCAL_PORT={{ sport }}
