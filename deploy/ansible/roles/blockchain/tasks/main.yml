@@ -52,3 +52,36 @@
     state: started
     enabled: true
     name: parity.service
+
+# Reverse SSH tunnel time!
+
+- name: Install SSH tunnel systemd service
+  template:
+    src: secure-tunnel@.service
+    dest: /etc/systemd/system/secure-tunnel@.service
+    owner: root
+    group: root
+    mode: 0644
+
+- name: Install secure-tunnel defaults
+  template:
+    src: secure-tunnel-defaults
+    dest: /etc/default/secure-tunnel@mainnet
+    owner: root
+    group: root
+    mode: 0644
+
+#- name: Install private key for tunnels
+#  copy:
+#    src: geth-http
+#    dest: /etc/ssh/geth-http
+#    owner: root
+#    group: root
+#    mode: 0600
+
+- name: Start ssh tunnel systemd service
+  systemd: 
+    daemon_reload: yes
+    state: started
+    enabled: true
+    name: secure-tunnel@mainnet.service
