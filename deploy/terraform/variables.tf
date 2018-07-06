@@ -8,6 +8,10 @@ variable "zone_id" {
   default = "Z1P0T0PQYB133B"
 }
 
+variable "dns_name" {
+  default = "rpc.blockchaindevlabs.com"
+}
+
 variable "amis" {
   type = "map"
   default = {

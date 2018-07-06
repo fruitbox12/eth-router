@@ -1,0 +1,23 @@
+---
+- name: Install Nginx
+  apt: pkg=nginx state=present update_cache=true
+
+- name: Copy configuration for Nginx proxy
+  template: src=default.conf dest=/etc/nginx/conf.d/default.conf
+  notify: Restart Nginx
+
+- name: Install node.js
+  apt: pkg=nodejs state=present 
+
+- name: Add Yarn repo key
+  apt_key:
+    url: https://dl.yarnpkg.com/debian/pubkey.gpg
+
+- name: Add Yarn repo
+  apt_repository:
+    repo: deb https://dl.yarnpkg.com/debian/ stable main
+    state: present
+    filename: go-ethereum
+
+- name: Install yarn
+  apt: pkg=yarn state=present update_cache=true

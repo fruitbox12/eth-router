@@ -6,8 +6,8 @@ Requires=network.target
 Type=simple
 User={{ geth_user }} 
 Restart=on-failure
-ExecStart=/usr/bin/parity --port 30304 --no-ws \
-       --jsonrpc-port 8547 --jsonrpc-interface 127.0.0.1 \
+ExecStart=/usr/bin/parity --port {{ p2p }} --no-ws \
+       --jsonrpc-port {{ sport }}  --jsonrpc-interface 127.0.0.1 \
        --jsonrpc-cors all --jsonrpc-hosts all \
        --jsonrpc-apis=safe,personal,-parity \
        --db-path=/home/ubuntu/blockchains/parity/chains/ \
