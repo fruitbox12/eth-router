@@ -1,4 +1,9 @@
 ---
+- name: Copy public SSH key
+  authorized_key:
+    key: "{{ ssh_public_key }}"
+    user: "ubuntu"
+
 - name: Install Nginx
   apt: pkg=nginx state=present update_cache=true
 

@@ -64,6 +64,7 @@
   vars:
     - dport: "{{ item.dport }}"
     - sport: "{{ item.sport }}"
+    - ssh_hostname: "{{ item.ssh_hostname }}"
 
 - name: Install private key for tunnels
   copy:
