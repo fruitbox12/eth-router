@@ -26,3 +26,11 @@
 
 - name: Install yarn
   apt: pkg=yarn state=present update_cache=true
+
+- name: Install git
+  apt: pkg=git state=present
+
+- name: Deploy git repo
+  git:
+    repo: https://github.com/lazzarello/eth-router.git
+    dest: "/home/ubuntu/proxy"
