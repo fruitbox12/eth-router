@@ -1,0 +1,8 @@
+#! /usr/bin/env bash
+
+pushd `pwd`
+cd `dirname "$0"` # cd to script path
+
+geth --dev --rpc --rpcapi=personal,web3,eth,rpc
+
+popd
