@@ -1,10 +1,11 @@
+const {tokens} = require("./config")
+
 // A reverse proxy server for many ethereum blockchain backends
 // Requires a valid web3 HTTP and WebSocket endpoint
 
 const httpProxy = require('http-proxy'),
       url = require('url'),
       fs = require('fs'),
-      tokenRecord = 'foo',
       targetHttpPort = 8545,
       targetWsPort = 8546,
       proxyPort = 3000;
@@ -44,8 +45,8 @@ const handleProxyRequests = server => {
 
 const authenticate = (req, res)  => {
   const query = url.parse(req.url, true).query
-  console.log(`Received request with token: ${query['token']}`)
-  if (query['token'] !== tokenRecord) {
+
+  if (!tokens[query['token']]) {
     res.writeHead(401, {'Content-Type': 'application/json' })
     res.write(JSON.stringify({ error: "access denied" }))
     res.end()

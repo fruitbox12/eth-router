@@ -2,6 +2,8 @@ const http = require("http")
 const request = require('supertest')
 const {expect} = require("chai")
 const {run, targetHttpPort, proxyPort } = require("../src/secureProxy")
+const {tokens} = require("../src/config")
+const token = Object.keys(tokens)[0]
 
 describe("secure proxy", () => {
   const proxy = run()
@@ -20,7 +22,7 @@ describe("secure proxy", () => {
 
   it("proxies a request to a target server", async () => {
     const response = await agent
-      .post("/?token=foo")
+      .post(`/?token=${token}`)
       .send({bar: 'baz'})
       .expect(200)
 
