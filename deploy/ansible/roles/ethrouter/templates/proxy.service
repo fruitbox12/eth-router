@@ -1,0 +1,13 @@
+[Unit]
+Description=Start token auth proxy app
+Requires=network.target
+
+[Service]
+WorkingDirectory=/home/{{ geth_user }}/proxy
+Type=simple
+User={{ geth_user }} 
+Restart=on-failure
+ExecStart=yarn start
+
+[Install]
+WantedBy=default.target
