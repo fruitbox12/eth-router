@@ -1,14 +1,17 @@
 const {tokens} = require("./config")
 
 // A reverse proxy server for many ethereum blockchain backends
-// Requires a valid web3 HTTP and WebSocket endpoint
+// Requires a valid web3 HTTP and WebSocket endpoint on target server
 
 const httpProxy = require('http-proxy'),
       url = require('url'),
       fs = require('fs'),
+      tlsConfig = require('./config').tls
       targetHttpPort = 8545,
       targetWsPort = 8546,
       proxyPort = 3000;
+
+const {keyPath, certPath} = tlsConfig
 
 const run = () => {
   const server = handleProxyRequests(initialize())
@@ -18,40 +21,34 @@ const run = () => {
 }
 
 const initialize = () => {
-  // web3 support for SSL not supported for self-signed certs; cURL is. See README for details.
   return httpProxy.createServer({
     target: `http://localhost:${targetHttpPort}`,
-
-    // TODO: (aguestuser|04 Jul 2018)
-    // restore this once local CA enables passing tests
-    // see: https://stackoverflow.com/questions/19665863/how-do-i-use-a-self-signed-certificate-for-a-https-node-js-server/24749608#24749608
-
-    // ssl: {
-    //   key: fs.readFileSync('ssl/key.pem', 'utf8'),
-    //   cert: fs.readFileSync('ssl/cert.pem', 'utf8')
-    // }
+    ssl: {
+      key: fs.readFileSync(keyPath, 'utf8'),
+      cert: fs.readFileSync(certPath, 'utf8')
+    }
   })
 }
 
 const handleProxyRequests = server => {
-  // 'proxyReq' event is called after TLS handshake and before passing the request to the backend.
+  // 'proxyReq' event called after TLS handshake, before passing request to server
   server.on('proxyReq', function(proxyReq, req, res, options) {
-    authenticate(req, res)
-    // curious: does ordering matter here?
+    authenticate(req, res) // TODO: does ordering matter here?
     handleWsUpgrade(server)
   });
   return server
 }
 
 const authenticate = (req, res)  => {
-  const query = url.parse(req.url, true).query
-
-  if (!tokens[query['token']]) {
+  if (!tokens[parseToken(req)]) {
     res.writeHead(401, {'Content-Type': 'application/json' })
     res.write(JSON.stringify({ error: "access denied" }))
     res.end()
   }
 }
+
+const parseToken = (req) =>
+  url.parse(req.url, true).query['token']
 
 const handleWsUpgrade = server => {
   server.on('upgrade', (req, socket, head) => {

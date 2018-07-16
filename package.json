@@ -10,8 +10,9 @@
     "node": "10.6.0"
   },
   "scripts": {
-    "start": "node src/index.js",
-    "test": "NODE_ENV=test mocha --reporter spec 'test/**/*.spec.js'"
+    "dev": "NODE_ENV=development ./bin/gen-certs &&  node src/index.js",
+    "prod": "NODE_ENV=production node src/index.js",
+    "test": "./bin/gen-certs && NODE_ENV=test mocha --reporter spec 'test/**/*.spec.js'"
   },
   "dependencies": {
     "http": "^0.0.0",
