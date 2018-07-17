@@ -9,6 +9,8 @@ User=ubuntu
 Restart=on-failure
 ExecStart=/usr/bin/yarn start
 Environment=NODE_ENV=production
+Environment=TLS_KEY_PATH={{ certbot_path }}/privkey.pem
+Environment=TLS_CERT_PATH={{ certbot_certs }}/fullchain.pem
 
 [Install]
 WantedBy=default.target
