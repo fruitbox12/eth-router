@@ -10,14 +10,17 @@
     "node": "10.6.0"
   },
   "scripts": {
-    "dev": "NODE_ENV=development ./bin/gen-certs &&  node src/index.js",
+    "dev": "./bin/gen-certs && NODE_ENV=development node src/index.js",
     "prod": "NODE_ENV=production node src/index.js",
     "test": "./bin/gen-certs && NODE_ENV=test mocha --reporter spec 'test/**/*.spec.js'"
   },
   "dependencies": {
     "http": "^0.0.0",
     "http-proxy": "^1.17.0",
-    "url": "^0.11.0"
+    "https": "^1.0.0",
+    "url": "^0.11.0",
+    "websocket": "^1.0.26",
+    "ws": "^5.2.2"
   },
   "devDependencies": {
     "chai": "^4.1.2",

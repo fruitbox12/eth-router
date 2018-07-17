@@ -1,3 +1,5 @@
+const https = require("https")
+const http = require("http")
 const {tokens} = require("./config")
 
 // A reverse proxy server for many ethereum blockchain backends
@@ -7,6 +9,8 @@ const httpProxy = require('http-proxy'),
       url = require('url'),
       fs = require('fs'),
       tlsConfig = require('./config').tls
+      // targetHost = 'localhost',
+      targetHost = "127.0.0.1",
       targetHttpPort = 8545,
       targetWsPort = 8546,
       proxyPort = 3000;
@@ -14,30 +18,103 @@ const httpProxy = require('http-proxy'),
 const {keyPath, certPath} = tlsConfig
 
 const run = () => {
-  const server = handleProxyRequests(initialize())
+  const proxy = createProxy()
+  const server = handleWsRequests(createServer(proxy), proxy)
+  // const server = handleRequests(createServer())
   server.listen(proxyPort);
   console.log(`Listening on HTTPS port ${proxyPort}`);
   return server
 }
 
-const initialize = () => {
-  return httpProxy.createServer({
-    target: `http://localhost:${targetHttpPort}`,
-    ssl: {
-      key: fs.readFileSync(keyPath, 'utf8'),
-      cert: fs.readFileSync(certPath, 'utf8')
-    }
+// const createProxy = () => {
+//   return httpProxy.createServer({
+//     // target: `http://${targetHost}:${targetHttpPort}`,
+//     // ssl: {
+//     //   key: fs.readFileSync(keyPath, 'utf8'),
+//     //   cert: fs.readFileSync(certPath, 'utf8')
+//     // }
+//   })
+// }
+
+const createProxy = () => {
+  return httpProxy.createProxyServer({
+  
   })
 }
 
-const handleProxyRequests = server => {
-  // 'proxyReq' event called after TLS handshake, before passing request to server
-  server.on('proxyReq', function(proxyReq, req, res, options) {
-    authenticate(req, res) // TODO: does ordering matter here?
-    handleWsUpgrade(server)
-  });
+const createServer = proxy =>
+  http.createServer((req, res) => proxy.web(req, res, {
+      target: `http://${targetHost}:${targetHttpPort}`,
+      ssl: {
+        key: fs.readFileSync(keyPath, 'utf8'),
+        cert: fs.readFileSync(certPath, 'utf8')
+      }
+    })
+  )
+
+// proxy -> sever
+
+const handleRequests = proxy => handleHttpRequests(proxy)
+
+const handleHttpRequests = proxy =>
+  https.createServer((req, res) => proxy.web(req, res))
+
+const handleWsRequests = (server, proxy) => {
+  server.on("upgrade", (req, socket, head) => {
+    proxy.ws(req, socket, head, { target: `ws://${targetHost}:${targetWsPort}` })
+  })
   return server
 }
+
+
+// const handleRequests = server => handleProxyRequests(server)
+
+// const handleProxyRequests = server => {
+//   // 'proxyReq' event called after TLS handshake, before passing request to server
+//   server.on('proxyReq', (proxyReq, req, res, options) => {
+//     authenticate(req, res)
+//     if (isUpgrade(req)) createWsProxy(req, res)
+//   })
+//   return server
+// }
+
+// const handleWsUpgrade = server => {
+//   server.on('upgrade', (req, socket, head) => {
+//     console.log("Got WSS upgrade connection");
+//     createWsProxy()
+//   })
+//   return server
+// }
+
+const createWsProxy = (req, res) => {
+  console.log("wsProxy created")
+  const proxy = httpProxy.createProxyServer({
+    ws: true,
+    target: `ws://${targetHost}:${targetWsPort}`,
+    // ssl: {
+    //   key: fs.readFileSync(keyPath, 'utf8'),
+    //   cert: fs.readFileSync(certPath, 'utf8')
+    // }
+  })
+  proxy.ws(req, req.socket, req.headers)
+  // res.writeHead(302, {'Content-Type': 'application/json' })
+  res.end()
+}
+
+
+// const createWsProxyDumb = () =>
+//   httpProxy.createServer({
+//     ws: true,
+//     target: `ws://${targetHost}:${targetWsPort}`,
+//     ssl: {
+//       key: fs.readFileSync(keyPath, 'utf8'),
+//       cert: fs.readFileSync(certPath, 'utf8')
+//     }
+//   }).listen(targetWsPort)
+
+const isUpgrade = req =>
+  req.headers.connection === "Upgrade" &&
+  req.headers.upgrade === "websocket"
 
 const authenticate = (req, res)  => {
   if (!tokens[parseToken(req)]) {
@@ -50,19 +127,10 @@ const authenticate = (req, res)  => {
 const parseToken = (req) =>
   url.parse(req.url, true).query['token']
 
-const handleWsUpgrade = server => {
-  server.on('upgrade', (req, socket, head) => {
-    console.log("Got WSS upgrade connection");
-    httpProxy
-      .createProxyServer({ ws: true })
-      .ws(req, socket, head, {
-        target: `ws://localhost:${targetWsPort}`
-      })
-  })
-}
 
 module.exports = {
   run,
+  targetHost,
   targetHttpPort,
   targetWsPort,
   proxyPort,
