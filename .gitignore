@@ -19,6 +19,7 @@
 
 .byebug_history
 *.pem
+*.srl
 node_modules
 .terraform
 *.tfstate.*

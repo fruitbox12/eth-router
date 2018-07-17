@@ -1,3 +1,3 @@
-const {run} = require("./secureProxy")
+const {run} = require("./proxy")
 
 run()

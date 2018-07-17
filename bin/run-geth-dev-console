@@ -1,4 +1,4 @@
-#! /usr/bin/env bash
+#!/usr/bin/env bash
 
 pushd `pwd`
 cd `dirname "$0"` # cd to script path
