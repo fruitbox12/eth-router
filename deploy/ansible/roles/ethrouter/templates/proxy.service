@@ -3,11 +3,12 @@ Description=Start token auth proxy app
 Requires=network.target
 
 [Service]
-WorkingDirectory=/home/{{ geth_user }}/proxy
+WorkingDirectory=/home/ubuntu/proxy
 Type=simple
-User={{ geth_user }} 
+User=ubuntu
 Restart=on-failure
-ExecStart=yarn start
+ExecStart=/usr/bin/yarn start
+Environment=NODE_ENV=production
 
 [Install]
 WantedBy=default.target
