@@ -11,8 +11,18 @@
   template: src=default.conf dest=/etc/nginx/conf.d/default.conf
   notify: Restart Nginx
 
-- name: Install node.js
-  apt: pkg=nodejs state=present 
+- name: Install nodesource key
+  apt_key:
+    url: https://deb.nodesource.com/gpgkey/nodesource.gpg.key
+
+- name: Add nodesource repo
+  apt_repository:
+    repo: deb https://deb.nodesource.com/node_10.x xenial main
+    state: present
+    filename: nodesource
+
+- name: Install node
+  apt: pkg=nodejs state=present update_cache=true
 
 - name: Add Yarn repo key
   apt_key:
@@ -22,7 +32,7 @@
   apt_repository:
     repo: deb https://dl.yarnpkg.com/debian/ stable main
     state: present
-    filename: go-ethereum
+    filename: yarn
 
 - name: Install yarn
   apt: pkg=yarn state=present update_cache=true
@@ -34,3 +44,27 @@
   git:
     repo: https://github.com/lazzarello/eth-router.git
     dest: "/home/ubuntu/proxy"
+  become: yes
+  become_user: "ubuntu"
+
+# only works with 2.6
+- name: Install dependencies for proxy app
+  yarn:
+    path: "/home/ubuntu/proxy"
+  become: yes
+  become_user: "ubuntu"
+
+- name: Install systemd unit for proxy
+  template:
+    src: proxy.service
+    dest: /etc/systemd/system/proxy.service
+    owner: root
+    group: root
+    mode: 0644
+
+- name: Enable systemd service for proxy
+  systemd:
+    daemon_reload: yes
+    state: started
+    enabled: true
+    name: proxy.service
