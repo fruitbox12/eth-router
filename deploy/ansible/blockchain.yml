@@ -15,7 +15,7 @@
     #geth_rpcpublic: true
     #geth_rpcaddr: 0.0.0.0
     #geth_rpcport: 8080
-    geth_rpcapi: "personal,eth,net,web3,admin"
+    geth_rpcapi: "eth,net,web3"
     geth_rpccorsdomain: "*"
     geth_rpcvhosts: "*"
     parity_version: "1.11.4"
