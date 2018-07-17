@@ -44,8 +44,17 @@
   git:
     repo: https://github.com/lazzarello/eth-router.git
     dest: "/home/ubuntu/proxy"
+    force: yes
   become: yes
   become_user: "ubuntu"
+
+- name: Copy tokens data
+  copy:
+    src: production.json
+    dest: "/home/ubuntu/proxy/src/config/tokens/production.json"
+    owner: "ubuntu"
+    group: "ubuntu"
+    mode: 0644
 
 # only works with 2.6
 - name: Install dependencies for proxy app
