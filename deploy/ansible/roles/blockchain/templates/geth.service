@@ -14,7 +14,7 @@ ExecStart=/usr/bin/geth --datadir "{{ geth_datadir }}" --cache {{ geth_cache }} 
                         --rpcport {{ geth_rpcport }} --rpcapi {{ geth_rpcapi }} \
                         {% if geth_rpccorsdomain is defined %} --rpccorsdomain "{{ geth_rpccorsdomain }}"{% endif %} \
                         {% if geth_rpcvhosts %} --rpcvhosts "{{ geth_rpcvhosts }}"{% endif %}{% endif %} \
-                        --ws --wsorigins {{ geth_rpccorsdomain }}
+                        --ws --wsport {{ ws_sport }} --wsorigins {{ geth_rpccorsdomain }}
 
 [Install]
 WantedBy=default.target
