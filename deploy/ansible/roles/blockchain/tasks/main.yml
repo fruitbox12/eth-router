@@ -33,6 +33,7 @@
   with_items: "{{ blockchain_apps }}"
   vars:
     - sport: "{{ item.sport }}"
+    - ws_sport: "{{ item.ws_sport }}"
     - p2p: "{{ item.p2p }}"
 
 - name: Start blockchain systemd services
@@ -56,11 +57,11 @@
 - name: Install secure-tunnel defaults
   template:
     src: secure-tunnel-defaults
-    dest: /etc/default/secure-tunnel@{{ item.network }}
+    dest: /etc/default/secure-tunnel@{{ item.name }}
     owner: root
     group: root
     mode: 0644
-  with_items: "{{ blockchain_apps }}"
+  with_items: "{{ ssh_tunnels }}"
   vars:
     - dport: "{{ item.dport }}"
     - sport: "{{ item.sport }}"
@@ -79,5 +80,5 @@
     daemon_reload: yes
     state: started
     enabled: true
-    name: secure-tunnel@{{ item.network }}.service
-  with_items: "{{ blockchain_apps }}"
+    name: secure-tunnel@{{ item.name }}.service
+  with_items: "{{ ssh_tunnels }}"
