@@ -1,68 +1,56 @@
+const httpProxy = require('http-proxy')
+const http = require("http")
 const {tokens} = require("./config")
+const url = require('url')
+const targetHost = 'localhost'
+const targetHttpPort = 8545
+const targetWsPort = 8546
+const proxyPort = 3000
 
-// A reverse proxy server for many ethereum blockchain backends
-// Requires a valid web3 HTTP and WebSocket endpoint on target server
+// HERE LIES: A reverse proxy server for many ethereum blockchain backends
+// - Requires valid web3 HTTP and WebSocket endpoints on target server
+// - Proxy listens on port 3000, assumes
+// - Proxies http requests to port 8545 of target, ws connections to port 8646 on target
+// - Authenticates based on presence of whitelisted tokens (which are sha256 hashes)
 
-const httpProxy = require('http-proxy'),
-      url = require('url'),
-      fs = require('fs'),
-      tlsConfig = require('./config').tls
-      targetHttpPort = 8545,
-      targetWsPort = 8546,
-      proxyPort = 3000;
-
-const {keyPath, certPath} = tlsConfig
-
+// main function
 const run = () => {
-  const server = handleProxyRequests(initialize())
-  server.listen(proxyPort);
-  console.log(`Listening on HTTPS port ${proxyPort}`);
+  const proxy = httpProxy.createProxyServer({})
+  const server = handleWsRequests(createServer(proxy), proxy)
+  server.listen(proxyPort)
+
+  console.log(`Listening on HTTPS port ${proxyPort}`)
   return server
 }
 
-const initialize = () => {
-  return httpProxy.createServer({
-    target: `http://localhost:${targetHttpPort}`,
-    ssl: {
-      key: fs.readFileSync(keyPath, 'utf8'),
-      cert: fs.readFileSync(certPath, 'utf8')
-    }
+const createServer = proxy => (
+  http.createServer((req, res) => {
+    hasValidToken(req)
+      ? proxy.web(req, res, { target: `http://${targetHost}:${targetHttpPort}` })
+      : respondWith401(res)
   })
-}
-
-const handleProxyRequests = server => {
-  // 'proxyReq' event called after TLS handshake, before passing request to server
-  server.on('proxyReq', function(proxyReq, req, res, options) {
-    authenticate(req, res) // TODO: does ordering matter here?
-    handleWsUpgrade(server)
-  });
+)
+const handleWsRequests = (server, proxy) => {
+  server.on("upgrade", (req, socket, head) => {
+    hasValidToken(req)
+    ? proxy.ws(req, socket, head, { target: `ws://${targetHost}:${targetWsPort}` })
+    : socket.end("HTTP/1.1 401 Unauthorized\r\n\r\n")
+  })
   return server
 }
 
-const authenticate = (req, res)  => {
-  if (!tokens[parseToken(req)]) {
-    res.writeHead(401, {'Content-Type': 'application/json' })
-    res.write(JSON.stringify({ error: "access denied" }))
-    res.end()
-  }
-}
+const hasValidToken = (req)  =>
+  tokens[url.parse(req.url, true).query['token']]
 
-const parseToken = (req) =>
-  url.parse(req.url, true).query['token']
-
-const handleWsUpgrade = server => {
-  server.on('upgrade', (req, socket, head) => {
-    console.log("Got WSS upgrade connection");
-    httpProxy
-      .createProxyServer({ ws: true })
-      .ws(req, socket, head, {
-        target: `ws://localhost:${targetWsPort}`
-      })
-  })
+const respondWith401 = (res) => {
+  res.writeHead(401, {'Content-Type': 'application/json' })
+  res.write(JSON.stringify({ error: "access denied" }))
+  res.end()
 }
 
 module.exports = {
   run,
+  targetHost,
   targetHttpPort,
   targetWsPort,
   proxyPort,

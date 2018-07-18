@@ -1,14 +1,15 @@
-const fs = require('fs')
 const http = require("http")
 const request = require('supertest')
 const {expect} = require("chai")
-const {run, targetHttpPort, proxyPort } = require("../src/proxy")
+const {run, targetHttpPort, targetHost, targetWsPort, proxyPort } = require("../src/proxy")
 const {tokens} = require("../src/config")
-
+const WebSocket = require("ws")
 
 describe("secure proxy", () => {
 
-  const target = http
+  const token = Object.keys(tokens)[0]
+
+  const runTarget = () => http
     .createServer((req, res)  => {
       res.writeHead(200, { 'Content-Type': 'application/json' })
       res.write(JSON.stringify({ foo: "bar" }))
@@ -16,60 +17,74 @@ describe("secure proxy", () => {
     })
     .listen(targetHttpPort)
 
-  const proxy = run()
-  const token = Object.keys(tokens)[0]
-  const ca = fs.readFileSync('certs/ca/my-root-ca.crt.pem');
+  let proxy, target
+
+  before(() => {
+    proxy = run()
+    target = runTarget()
+  })
 
   after(() => {
     proxy.close()
     target.close()
   })
 
-  describe("with TLS", () => {
-    const agent = request(`https://localhost:${proxyPort}`)
+  describe("for an HTTP request", () => {
+
+    const agent = request(`http://${targetHost}:${proxyPort}`)
 
     it("proxies a request with a valid token to target server", async () => {
-      const response = await agent
-        .post(`/?token=${token}`)
-        .ca(ca)
-        .send({bar: 'baz'})
-        .expect(200)
-
+      const response = await agent.post(`/?token=${token}`).send({bar: 'baz'}).expect(200)
       expect(response.body).to.eql({ foo: "bar" })
     })
 
-    it("rejects a request with an invalid token", async () => {
-      const res = await agent
-        .post("/?token=malicious")
-        .ca(ca)
-        .send({steal: 'passwords!'})
-        .expect(401)
-
+    it("rejects an request with an invalid token", async () => {
+      const res = await agent.post("/?token=malicious").send({steal: 'passwords!'}).expect(401)
       expect(res.body).to.eql({ error: "access denied" })
     })
 
     it("rejects a request with a missing token", async () => {
-      const res = await agent
-        .post("/?foo=bar")
-        .ca(ca)
-        .expect(401)
-
+      const res = await agent.post("/?foo=bar").expect(401)
       expect(res.body).to.eql({ error: "access denied" })
     })
   })
 
-  describe("without TLS", () => {
-    const agent = request(`http://localhost:${proxyPort}`)
+  describe("for a WS connection", () => {
 
-    it("will not accept requests", async () => {
-      const err = await agent
-        .post(`/?token=${token}`)
-        .ca(ca)
-        .send({bar: 'baz'})
-        .catch(e => e)
+    let wsClient, wsServer
+    before(() => wsServer = new WebSocket.Server({port: targetWsPort }))
+    after(() => wsServer.close())
 
-      expect(err.code).to.eql("ECONNRESET")
-      expect(err.message).to.eql("socket hang up")
+    describe("with a valid token", () => {
+
+      beforeEach(() => wsClient = new WebSocket(`ws://${targetHost}:${proxyPort}/?token=${token}`))
+      afterEach(() => wsClient.close())
+
+      it("creates a proxied websocket connection", done => {
+        wsServer.on("connection", ws => ws.on("message", msg => {
+          expect(msg).to.eql("foo")
+          done()
+        }))
+        wsClient.on("open", () => wsClient.send("foo"))
+      })
+    })
+
+    describe("with an invalid token", () => {
+
+      beforeEach(() => wsClient = new WebSocket(`ws://${targetHost}:${proxyPort}/?token=invalid`))
+
+      it("rejects a connection ;attempt", async () => {
+        wsClient.on("error", err => expect(err.message).to.eql("Unexpected server response: 401"))
+      })
+    })
+
+    describe("without any token", () => {
+
+      beforeEach(() => wsClient = new WebSocket(`ws://${targetHost}:${proxyPort}`))
+
+      it("rejects a connection attempt", async () => {
+        wsClient.on("error", err => expect(err.message).to.eql("Unexpected server response: 401"))
+      })
     })
   })
 })
