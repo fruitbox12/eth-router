@@ -26,7 +26,7 @@ describe("secure proxy", () => {
 
   after(() => {
     proxy.close()
-    target.close()
+    try { target.close() } catch {}
   })
 
   describe("for an HTTP request", () => {
@@ -46,6 +46,24 @@ describe("secure proxy", () => {
     it("rejects a request with a missing token", async () => {
       const res = await agent.post("/?foo=bar").expect(401)
       expect(res.body).to.eql({ error: "access denied" })
+    })
+
+    describe("when target server disconnects", () => {
+
+      beforeEach(() => target.close())
+      afterEach(() => { try { target.close() } catch {} })
+
+      it("responds to requests with 503 messages", async () => {
+        const response = await agent.post(`/?token=${token}`).send({bar: 'baz'}).expect(503)
+        expect(response.body).to.eql({ error: "service unavailable" })
+      })
+
+      it("recovers gracefully when a disconnected server is reconnected", async () => {
+        target = await runTarget()
+        const response = await agent.post(`/?token=${token}`).send({bar: 'baz'}).expect(200)
+        expect(response.body).to.eql({ foo: "bar" })
+      })
+
     })
   })
 
@@ -84,6 +102,47 @@ describe("secure proxy", () => {
 
       it("rejects a connection attempt", async () => {
         wsClient.on("error", err => expect(err.message).to.eql("Unexpected server response: 401"))
+      })
+    })
+
+    describe("when target server disconnects", () => {
+
+      describe("and a websocket is open", () => {
+        beforeEach(() => {
+          wsClient = new WebSocket(`ws://${targetHost}:${proxyPort}?token=${token}`)
+          wsServer.close()
+        })
+
+        it("closes an the websocket with a 503 message", () => {
+          wsClient.on("error", err => expect(err.message).to.eql("Unexpected server response: 503"))
+        })
+      })
+
+      describe("and a client attempts to open a new websocket", () => {
+        beforeEach(()  =>  {
+          wsServer.close()
+          wsClient = new WebSocket(`ws://${targetHost}:${proxyPort}?token=${token}`)
+        })
+
+        it("responds to a WS upgrade requests with 503 message", () => {
+          wsClient.on("error", err => expect(err.message).to.eql("Unexpected server response: 503"))
+        })
+      })
+    })
+
+    describe("when target server disconnects then reconnects", () => {
+      beforeEach(() => {
+        wsServer.close()
+        wsServer = new WebSocket.Server({port: targetWsPort })
+        wsClient = new WebSocket(`ws://${targetHost}:${proxyPort}/?token=${token}`)
+      })
+
+      it("handles websocket upgrade attempts", () => {
+        wsServer.on("connection", ws => ws.on("message", msg => {
+          expect(msg).to.eql("foo")
+          done()
+        }))
+        wsClient.on("open", () => wsClient.send("foo"))
       })
     })
   })
