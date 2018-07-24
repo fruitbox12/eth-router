@@ -30,6 +30,7 @@
       - { name: "parity-ws", sport: "8548", dport: "8548", network: "mainnet", ssh_hostname: "rpc.blockchaindevlabs.com"}
     private_key_name: "geth-http"
     ssh_hostname: "eth.quantstamp.com"
+    tunnel_user: ubuntu
 
   roles:
     - blockchain
