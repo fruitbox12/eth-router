@@ -15,7 +15,7 @@ const proxyPort = 3000
 
 // main function
 const run = () => {
-  const proxy = httpProxy.createProxyServer({})
+  const proxy = createProxy()
   const server = handleWsRequests(createServer(proxy), proxy)
   server.listen(proxyPort)
 
@@ -23,13 +23,25 @@ const run = () => {
   return server
 }
 
+const createProxy = () => {
+  const proxy = httpProxy.createProxyServer({})
+  proxy.on("error", (err, req, res) => {
+    const [code, msg] = err.code === 'ECONNREFUSED'
+      ? [503, 'service unavailable']
+      : [500, "server error"]
+    respondWithError(res, code, msg)
+  })
+  return proxy
+}
+
 const createServer = proxy => (
   http.createServer((req, res) => {
     hasValidToken(req)
       ? proxy.web(req, res, { target: `http://${targetHost}:${targetHttpPort}` })
-      : respondWith401(res)
+      : respondWithError(res, 401, "access denied")
   })
 )
+
 const handleWsRequests = (server, proxy) => {
   server.on("upgrade", (req, socket, head) => {
     hasValidToken(req)
@@ -42,9 +54,9 @@ const handleWsRequests = (server, proxy) => {
 const hasValidToken = (req)  =>
   tokens[url.parse(req.url, true).query['token']]
 
-const respondWith401 = (res) => {
-  res.writeHead(401, {'Content-Type': 'application/json' })
-  res.write(JSON.stringify({ error: "access denied" }))
+const respondWithError = (res, code, msg) => {
+  res.writeHead(code, {'Content-Type': 'application/json' })
+  res.write(JSON.stringify({ error: msg }))
   res.end()
 }
 

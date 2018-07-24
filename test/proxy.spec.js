@@ -26,7 +26,7 @@ describe("secure proxy", () => {
 
   after(() => {
     proxy.close()
-    target.close()
+    try { target.close() } catch {}
   })
 
   describe("for an HTTP request", () => {
@@ -46,6 +46,12 @@ describe("secure proxy", () => {
     it("rejects a request with a missing token", async () => {
       const res = await agent.post("/?foo=bar").expect(401)
       expect(res.body).to.eql({ error: "access denied" })
+    })
+
+    it("handles a request to a disconnected server", async () => {
+      await target.close()
+      const response = await agent.post(`/?token=${token}`).send({bar: 'baz'}).expect(503)
+      expect(response.body).to.eql({ error: "service unavailable" })
     })
   })
 
