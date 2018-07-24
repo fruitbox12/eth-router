@@ -105,14 +105,28 @@ describe("secure proxy", () => {
       })
     })
 
-    describe("when target serverdisconnects", () => {
-      beforeEach(() => {
-        wsClient = new WebSocket(`ws://${targetHost}:${proxyPort}?token=${token}`)
-        wsServer.close()
+    describe("when target server disconnects", () => {
+
+      describe("and a websocket is open", () => {
+        beforeEach(() => {
+          wsClient = new WebSocket(`ws://${targetHost}:${proxyPort}?token=${token}`)
+          wsServer.close()
+        })
+
+        it("closes an the websocket with a 503 message", () => {
+          wsClient.on("error", err => expect(err.message).to.eql("Unexpected server response: 503"))
+        })
       })
 
-      it("closes websocket gracefully", () => {
-        wsClient.on("error", err => expect(err.message).to.eql("Unexpected server response: 503"))
+      describe("and a client attempts to open a new websocket", () => {
+        beforeEach(()  =>  {
+          wsServer.close()
+          wsClient = new WebSocket(`ws://${targetHost}:${proxyPort}?token=${token}`)
+        })
+
+        it("responds to a WS upgrade requests with 503 message", () => {
+          wsClient.on("error", err => expect(err.message).to.eql("Unexpected server response: 503"))
+        })
       })
     })
   })
