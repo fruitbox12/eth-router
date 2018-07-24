@@ -11,7 +11,7 @@ proxy)
   rm "${proxy_playbook_path}/production.json"
   ;;
 blockchain)
-  ansible-playbook -i hosts -u ubuntu --vault-id @prompt blockchain.yml
+  ansible-playbook -i hosts -u anton --vault-id @prompt blockchain.yml
   ;;
 *)
   echo "Invalid argument. Choose a type 'proxy' or 'blockchain'"
