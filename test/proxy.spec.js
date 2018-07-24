@@ -129,5 +129,21 @@ describe("secure proxy", () => {
         })
       })
     })
+
+    describe("when target server disconnects then reconnects", () => {
+      beforeEach(() => {
+        wsServer.close()
+        wsServer = new WebSocket.Server({port: targetWsPort })
+        wsClient = new WebSocket(`ws://${targetHost}:${proxyPort}/?token=${token}`)
+      })
+
+      it("handles websocket upgrade attempts", () => {
+        wsServer.on("connection", ws => ws.on("message", msg => {
+          expect(msg).to.eql("foo")
+          done()
+        }))
+        wsClient.on("open", () => wsClient.send("foo"))
+      })
+    })
   })
 })
