@@ -48,10 +48,22 @@ describe("secure proxy", () => {
       expect(res.body).to.eql({ error: "access denied" })
     })
 
-    it("handles a request to a disconnected server", async () => {
-      await target.close()
-      const response = await agent.post(`/?token=${token}`).send({bar: 'baz'}).expect(503)
-      expect(response.body).to.eql({ error: "service unavailable" })
+    describe("when target server disconnects", () => {
+
+      beforeEach(() => target.close())
+      afterEach(() => { try { target.close() } catch {} })
+
+      it("responds to requests with 503 messages", async () => {
+        const response = await agent.post(`/?token=${token}`).send({bar: 'baz'}).expect(503)
+        expect(response.body).to.eql({ error: "service unavailable" })
+      })
+
+      it("recovers gracefully when a disconnected server is reconnected", async () => {
+        target = await runTarget()
+        const response = await agent.post(`/?token=${token}`).send({bar: 'baz'}).expect(200)
+        expect(response.body).to.eql({ foo: "bar" })
+      })
+
     })
   })
 
