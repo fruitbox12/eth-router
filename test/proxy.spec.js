@@ -92,5 +92,16 @@ describe("secure proxy", () => {
         wsClient.on("error", err => expect(err.message).to.eql("Unexpected server response: 401"))
       })
     })
+
+    describe("when target serverdisconnects", () => {
+      beforeEach(() => {
+        wsClient = new WebSocket(`ws://${targetHost}:${proxyPort}?token=${token}`)
+        wsServer.close()
+      })
+
+      it("closes websocket gracefully", () => {
+        wsClient.on("error", err => expect(err.message).to.eql("Unexpected server response: 503"))
+      })
+    })
   })
 })

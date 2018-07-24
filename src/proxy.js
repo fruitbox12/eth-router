@@ -25,14 +25,18 @@ const run = () => {
 
 const createProxy = () => {
   const proxy = httpProxy.createProxyServer({})
-  proxy.on("error", (err, req, res) => {
+  proxy.on("error", (err, req, writable) => { // `writable` is a Response or Socket
     const [code, msg] = err.code === 'ECONNREFUSED'
       ? [503, 'service unavailable']
       : [500, "server error"]
-    respondWithError(res, code, msg)
+    isResponse(writable)
+      ? respondWithError(writable, code, msg)
+      : writable.end("HTTP/1.1 503 Service Unavailable\r\n\r\n")
   })
   return proxy
 }
+
+const isResponse = writable => writable.constructor.name === 'ServerResponse'
 
 const createServer = proxy => (
   http.createServer((req, res) => {
