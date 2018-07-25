@@ -1,7 +1,7 @@
 const http = require("http")
 const request = require('supertest')
 const {expect} = require("chai")
-const {run, targetHttpPort, targetHost, targetWsPort, proxyPort } = require("../src/proxy")
+const {run, targetHost, proxyPort } = require("../src/proxy")
 const {tokens} = require("../src/config")
 const WebSocket = require("ws")
 
@@ -15,7 +15,7 @@ describe("secure proxy", () => {
       res.write(JSON.stringify({ foo: "bar" }))
       res.end()
     })
-    .listen(targetHttpPort)
+    .listen(tokens['ropstenHttpPort'])
 
   let proxy, target
 
@@ -70,7 +70,7 @@ describe("secure proxy", () => {
   describe("for a WS connection", () => {
 
     let wsClient, wsServer
-    before(() => wsServer = new WebSocket.Server({port: targetWsPort }))
+    before(() => wsServer = new WebSocket.Server({port: tokens['ropstenWsPort'] }))
     after(() => wsServer.close())
 
     describe("with a valid token", () => {
@@ -133,7 +133,7 @@ describe("secure proxy", () => {
     describe("when target server disconnects then reconnects", () => {
       beforeEach(() => {
         wsServer.close()
-        wsServer = new WebSocket.Server({port: targetWsPort })
+        wsServer = new WebSocket.Server({port: tokens['ropstenWsPort'] })
         wsClient = new WebSocket(`ws://${targetHost}:${proxyPort}/?token=${token}`)
       })
 

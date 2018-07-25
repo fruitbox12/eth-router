@@ -4,7 +4,9 @@ const configs = require("../src/config")
 describe("configs", () => {
   it("has a Set of tokens", () => {
     expect(configs.tokens).to.eql({
-      "d7ea27d3d20656533a89afb196a24a1aff814c0f2ad411d82e563f7c1d917854": true
+      "d7ea27d3d20656533a89afb196a24a1aff814c0f2ad411d82e563f7c1d917854": true,
+      "ropstenHttpPort" : 8545,
+      "ropstenWsPort" : 8546
     })
   })
   it("provides token configs for every environment", () => {
