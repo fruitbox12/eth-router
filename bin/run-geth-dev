@@ -3,6 +3,6 @@
 pushd `pwd`
 cd `dirname "$0"` # cd to script path
 
-geth --dev --rpc --rpcapi=personal,web3,eth,rpc
+geth --ws --dev --rpc --rpcapi=web3,eth,rpc
 
 popd
