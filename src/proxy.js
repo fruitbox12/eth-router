@@ -3,8 +3,6 @@ const http = require("http")
 const {tokens} = require("./config")
 const url = require('url')
 const targetHost = 'localhost'
-const targetHttpPort = 8545
-const targetWsPort = 8546
 const proxyPort = 3000
 
 // HERE LIES: A reverse proxy server for many ethereum blockchain backends
@@ -41,7 +39,7 @@ const isResponse = writable => writable.constructor.name === 'ServerResponse'
 const createServer = proxy => (
   http.createServer((req, res) => {
     hasValidToken(req)
-      ? proxy.web(req, res, { target: `http://${targetHost}:${targetHttpPort}` })
+      ? proxy.web(req, res, { target: `http://${targetHost}:${tokens['ropstenHttpPort']}` })
       : respondWithError(res, 401, "access denied")
   })
 )
@@ -49,7 +47,7 @@ const createServer = proxy => (
 const handleWsRequests = (server, proxy) => {
   server.on("upgrade", (req, socket, head) => {
     hasValidToken(req)
-    ? proxy.ws(req, socket, head, { target: `ws://${targetHost}:${targetWsPort}` })
+    ? proxy.ws(req, socket, head, { target: `ws://${targetHost}:${tokens['ropstenWsPort']}` })
     : socket.end("HTTP/1.1 401 Unauthorized\r\n\r\n")
   })
   return server
@@ -67,7 +65,5 @@ const respondWithError = (res, code, msg) => {
 module.exports = {
   run,
   targetHost,
-  targetHttpPort,
-  targetWsPort,
   proxyPort,
 }
