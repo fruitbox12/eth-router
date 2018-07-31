@@ -14,7 +14,6 @@
     geth_rpc: true
     #geth_rpcpublic: true
     #geth_rpcaddr: 0.0.0.0
-    #geth_rpcport: 8080
     geth_rpcapi: "eth,net,web3"
     geth_rpccorsdomain: "*"
     geth_rpcvhosts: "*"
@@ -29,7 +28,6 @@
       - { name: "parity", sport: "8547", dport: "8547", network: "mainnet", ssh_hostname: "rpc.blockchaindevlabs.com"}
       - { name: "parity-ws", sport: "8548", dport: "8548", network: "mainnet", ssh_hostname: "rpc.blockchaindevlabs.com"}
     private_key_name: "geth-http"
-    ssh_hostname: "eth.quantstamp.com"
     tunnel_user: ubuntu
 
   roles:

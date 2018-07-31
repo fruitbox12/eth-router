@@ -4,7 +4,7 @@ const test = require("./test")
 let production
 try {
   production = require("./production")
-} catch {
+} catch (e) {
   production = {}
 }
 
