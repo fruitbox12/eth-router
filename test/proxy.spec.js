@@ -26,7 +26,12 @@ describe("secure proxy", () => {
 
   after(() => {
     proxy.close()
-    try { target.close() } catch {}
+    try { 
+      target.close(); 
+    }
+    catch {
+    
+    }
   })
 
   describe("for an HTTP request", () => {
