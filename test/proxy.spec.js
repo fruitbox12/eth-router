@@ -27,7 +27,7 @@ describe("secure proxy", () => {
   after(() => {
     proxy.close()
     try { 
-      target.close(); 
+      target.close() 
     }
     catch {
     
