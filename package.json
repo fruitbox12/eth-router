@@ -2,7 +2,7 @@
   "name": "eth-router",
   "version": "0.0.1",
   "main": "proxy.js",
-  "repository": "git@github.com:lazzarello/eth-router.git",
+  "repository": "https://github.com/quantstamp/eth-router.git",
   "author": "lazarello",
   "license": "GPL-3.0-or-later",
   "private": false,
