@@ -11,24 +11,23 @@
 
 ## Why is this useful?
 
-A an application connection to an RPC has no built in authentication or transport layer security. By adding a SSL terminator with a CA signed certificate from Let's Encrypt and a reverse proxy in node.js, the following features could be built
+An application connection to an Ethereum node RPC has no built in authentication or transport layer security. By adding a SSL terminator with a CA signed certificate from Let's Encrypt and a reverse proxy in node.js, this project adds encryption and API token authentication. It could be extended to the following
 
-* Authentication with API tokens
 * Oauth or SAML security
 * API transformations to extend the web3 specification
 * One gateway to many backend networks (Mainnet, various testing networks, private blockchains)
 
 ## API endpoint mapping
 
-`{application}` = "geth", "parity"
+`{application}` = "geth", "parity"  
 `{proto}` = "wss", "https"
 
-domain: `{proto}://eth.example.com`
-Foundation (mainnet) location: `/{application}/mainnet`
-Ropsten: `/{applicaton}/ropsten`
-Kovan: `/{applicaton}/kovan`
-Rinkeby: `/{applicaton}/rinkeby`
-Dev RPC: `/{application}/development`
+domain: `{proto}://eth.example.com`  
+Foundation (mainnet) location: `/{application}/mainnet`  
+Ropsten: `/{applicaton}/ropsten`  
+Kovan: `/{applicaton}/kovan`  
+Rinkeby: `/{applicaton}/rinkeby`  
+Dev RPC: `/{application}/development`  
 
 # node.js stuff
 
@@ -68,7 +67,7 @@ The response should look something like `invalid content type, only application/
 
 The `deploy` directory has a Terraform template which will build a server instance in AWS, create security groups and attach a domain name. (look in the configuration for details)
 
-When the instance is online, you can bootstrap the node with the Ansible playbook named `proxy.yml`. This will generate a SSL certificate for the domain you specify in the file.
+When the instance is online, you can bootstrap the node with the [Ansible playbook](./deploy/ansible/README.md) named `proxy.yml`. This will generate a SSL certificate for the domain you specify in the file.
 
 If you would like to manually generate the certificate, read the next section.
 
@@ -86,7 +85,7 @@ SSL certificates can be served via let's encrypt. Here's how...
 
 ## Port mapping
 
-The ports start at TCP `8545` for the default development route and go up from there.
+The ports start at TCP `8545` for the default development route and go up from there. Scaling out backend connections is a work in progress.
 
 ## Development and Testing
 
@@ -120,3 +119,9 @@ $ ./bin/run-proxy-dev
 ``` shell
 $ ./bin/run-get-dev-console
 ```
+
+##Authors
+
+* Lee Azzarello [@lazzarello](https://twitter.com/leeazzarello)
+* Austin Guest [@aguestuser](https://twitter.com/aguestuser)
+* (your name here)
