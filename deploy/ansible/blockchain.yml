@@ -1,12 +1,12 @@
 ---
 - name: Install blockchain backends and tunnel to a secure proxy
   hosts: blockchain
-  remote_user: anton
+  remote_user: ubuntu
   become: yes
   become_method: sudo
 
   vars:
-    geth_user: anton
+    geth_user: ubuntu
     geth_testnet: true
     geth_cache: 512
     #geth_port: 30304
@@ -19,9 +19,9 @@
     geth_rpcvhosts: "*"
     parity_version: "1.11.4"
     blockchain_apps:
-      - { name: "geth", ws_sport: "8546", sport: "8545", network: "ropsten", p2p: "30303" }
-      - { name: "parity", ws_sport: "8548", sport: "8547", network: "mainnet", p2p: "30304"}
-      - { name: "parity-archive", ws_sport: "8548", sport: "8547", network: "mainnet", p2p: "30305"}
+      - { name: "geth", ws_sport: "8546", sport: "8545", network: "ropsten", p2p: "30303", enabled: true }
+      - { name: "parity", ws_sport: "8548", sport: "8547", network: "mainnet", p2p: "30304", enabled: false }
+      - { name: "parity-archive", ws_sport: "8548", sport: "8547", network: "mainnet", p2p: "30305", enabled: false }
     ssh_tunnels:
       - { name: "geth", sport: "8545", dport: "8545", network: "ropsten", ssh_hostname: "rpc.blockchaindevlabs.com" }
       - { name: "geth-ws", sport: "8546", dport: "8546", network: "ropsten", ssh_hostname: "rpc.blockchaindevlabs.com" }
