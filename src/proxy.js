@@ -2,7 +2,7 @@ const httpProxy = require('http-proxy')
 const http = require("http")
 const url = require('url')
 const { tokens, network } = require("./config")
-const { proxyPort, targetHost, ropstenHttpPort, ropstenWsPort } = network
+const { proxyPort, targetHost, ropstenHttpPort, ropstenWsPort, mainnetWsPort } = network
 
 // HERE LIES: A reverse proxy server for many ethereum blockchain backends
 // - Requires valid web3 HTTP and WebSocket endpoints on target server
@@ -54,7 +54,7 @@ const handleWsRequests = (server, proxy) => {
     } else if ( path == '/') {
       console.log("entered network 1001 upgrade event")
       hasValidToken(req)
-      ? proxy.ws(req, socket, head, { target: `ws://${targetHost}:8547` })
+      ? proxy.ws(req, socket, head, { target: `ws://${targetHost}:${mainnetWsPort}` })
       : socket.end("HTTP/1.1 401 Unauthorized\r\n\r\n")
     } else {
       console.log("entered location not found block")
