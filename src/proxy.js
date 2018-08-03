@@ -45,9 +45,21 @@ const createServer = proxy => (
 
 const handleWsRequests = (server, proxy) => {
   server.on("upgrade", (req, socket, head) => {
-    hasValidToken(req)
-    ? proxy.ws(req, socket, head, { target: `ws://${targetHost}:${ropstenWsPort}` })
-    : socket.end("HTTP/1.1 401 Unauthorized\r\n\r\n")
+    var path = url.parse(req.url).pathname;
+    if ( path == '/ropsten') {
+      console.log("entered network 1000 upgrade event")
+      hasValidToken(req)
+      ? proxy.ws(req, socket, head, { target: `ws://${targetHost}:${ropstenWsPort}` })
+      : socket.end("HTTP/1.1 401 Unauthorized\r\n\r\n")
+    } else if ( path == '/') {
+      console.log("entered network 1001 upgrade event")
+      hasValidToken(req)
+      ? proxy.ws(req, socket, head, { target: `ws://${targetHost}:8547` })
+      : socket.end("HTTP/1.1 401 Unauthorized\r\n\r\n")
+    } else {
+      console.log("entered location not found block")
+      socket.end("HTTP/1.1 404 Not Found\r\n\r\n")
+    }
   })
   return server
 }
