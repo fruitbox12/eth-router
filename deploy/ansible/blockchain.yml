@@ -1,7 +1,6 @@
 ---
 - name: Install blockchain backends and tunnel to a secure proxy
   hosts: blockchain
-  remote_user: ubuntu
   become: yes
   become_method: sudo
 
