@@ -2,7 +2,7 @@ const httpProxy = require('http-proxy')
 const http = require("http")
 const url = require('url')
 const { tokens, network } = require("./config")
-const { proxyPort, targetHost, ropstenHttpPort, ropstenWsPort, mainnetWsPort } = network
+const { proxyPort, targetHost, ropstenHttpPort, ropstenWsPort, mainnetWsPort, mainnetHttpPort } = network
 
 // HERE LIES: A reverse proxy server for many ethereum blockchain backends
 // - Requires valid web3 HTTP and WebSocket endpoints on target server
@@ -37,9 +37,19 @@ const isResponse = writable => writable.constructor.name === 'ServerResponse'
 
 const createServer = proxy => (
   http.createServer((req, res) => {
-    hasValidToken(req)
-      ? proxy.web(req, res, { target: `http://${targetHost}:${ropstenHttpPort}` })
-      : respondWithError(res, 401, "access denied")
+    var path = url.parse(req.url).pathname;
+    if ( path == '/ropsten') {
+      hasValidToken(req)
+        ? proxy.web(req, res, { target: `http://${targetHost}:${ropstenHttpPort}` })
+        : respondWithError(res, 401, "access denied")
+    } else if ( path == '/') {
+      hasValidToken(req)
+        ? proxy.web(req, res, { target: `http://${targetHost}:${mainnetHttpPort}` })
+        : respondWithError(res, 401, "access denied")
+    } else {
+      console.log("entered location not found block")
+      respondWithError(res, 404, "Not Found")
+    }
   })
 )
 
