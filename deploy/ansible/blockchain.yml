@@ -8,7 +8,7 @@
   vars:
     geth_user: ubuntu
     geth_testnet: true
-    geth_cache: 512
+    geth_cache: 2048
     #geth_port: 30304
     geth_datadir: "/home/{{ geth_user }}/blockchains/geth/testnet"
     geth_rpc: true
