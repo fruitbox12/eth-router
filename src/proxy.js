@@ -11,6 +11,10 @@ const { proxyPort, targetHost, ropstenHttpPort, ropstenWsPort, mainnetWsPort, ma
 // - Authenticates based on presence of whitelisted tokens (which are sha256 hashes)
 
 // main function
+
+const ropstenPath = '/'
+const mainnetPath = '/mainnet'
+
 const run = () => {
   const proxy = createProxy()
   const server = handleWsRequests(createServer(proxy), proxy)
@@ -38,11 +42,11 @@ const isResponse = writable => writable.constructor.name === 'ServerResponse'
 const createServer = proxy => (
   http.createServer((req, res) => {
     var path = url.parse(req.url).pathname;
-    if ( path == '/') {
+    if ( path == ropstenPath) {
       hasValidToken(req)
         ? proxy.web(req, res, { target: `http://${targetHost}:${ropstenHttpPort}` })
         : respondWithError(res, 401, "access denied")
-    } else if ( path == '/mainnet') {
+    } else if ( path == mainnetPath) {
       hasValidToken(req)
         ? proxy.web(req, res, { target: `http://${targetHost}:${mainnetHttpPort}` })
         : respondWithError(res, 401, "access denied")
@@ -56,12 +60,12 @@ const createServer = proxy => (
 const handleWsRequests = (server, proxy) => {
   server.on("upgrade", (req, socket, head) => {
     var path = url.parse(req.url).pathname;
-    if ( path == '/ropsten') {
+    if ( path == ropstenPath) {
       console.log("entered network 1000 upgrade event")
       hasValidToken(req)
       ? proxy.ws(req, socket, head, { target: `ws://${targetHost}:${ropstenWsPort}` })
       : socket.end("HTTP/1.1 401 Unauthorized\r\n\r\n")
-    } else if ( path == '/') {
+    } else if ( path == mainnetPath) {
       console.log("entered network 1001 upgrade event")
       hasValidToken(req)
       ? proxy.ws(req, socket, head, { target: `ws://${targetHost}:${mainnetWsPort}` })
