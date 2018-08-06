@@ -38,11 +38,11 @@ const isResponse = writable => writable.constructor.name === 'ServerResponse'
 const createServer = proxy => (
   http.createServer((req, res) => {
     var path = url.parse(req.url).pathname;
-    if ( path == '/ropsten') {
+    if ( path == '/') {
       hasValidToken(req)
         ? proxy.web(req, res, { target: `http://${targetHost}:${ropstenHttpPort}` })
         : respondWithError(res, 401, "access denied")
-    } else if ( path == '/') {
+    } else if ( path == '/mainnet') {
       hasValidToken(req)
         ? proxy.web(req, res, { target: `http://${targetHost}:${mainnetHttpPort}` })
         : respondWithError(res, 401, "access denied")
