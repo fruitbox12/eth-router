@@ -5,7 +5,7 @@ provider "aws" {
 }
 resource "aws_instance" "rpc_proxy" {
   ami = "${lookup(var.amis, var.region)}"
-  instance_type = "t2.micro"
+  instance_type = "t2.medium"
   security_groups = ["allow_all"]
   key_name = "${var.key_name}"
   provisioner "remote-exec" {
