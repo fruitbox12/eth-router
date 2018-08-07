@@ -47,6 +47,7 @@
     force: yes
   become: yes
   become_user: "ubuntu"
+  notify: Restart Proxy
 
 - name: Copy tokens data
   copy:
