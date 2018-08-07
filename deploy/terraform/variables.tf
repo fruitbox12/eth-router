@@ -6,6 +6,10 @@ variable "shared_credentials_profile" {
   default = "qs" 
 }
 
+variable "rpc_proxy_key_name" { 
+  default = "dev-eth-full-node-us-east-2" 
+}
+
 variable "blockchain_key_name" { 
   default = "dev-eth-full-node-us-east-2" 
 }
@@ -14,12 +18,8 @@ variable "region" {
   default = "us-east-2"
 }
 
-variable "zone_id" {
-  default = "Z1P0T0PQYB133B"
-}
-
 variable "dns_name" {
-  default = "rpc.blockchaindevlabs.com"
+  default = "testnet.com"
 }
 
 variable "ami_map" {

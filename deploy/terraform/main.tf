@@ -5,16 +5,20 @@ provider "aws" {
 }
 
 
-# TODO
-#module "proxy" {
-#}
+module "proxy" {
+  source = "./modules/proxy"
+  key_name = "${var.rpc_proxy_key_name}" 
+  region = "${var.region}"
+  dns_name = "testnet.com"
+  #amis = "${var.ami_map}"
+}
 
 
 module "blockchain" {
-  source = "${path.module}/modules/blockchain"
+  source = "./modules/blockchain"
   key_name = "${var.blockchain_key_name}" 
   region = "${var.region}"
-  amis = "${var.ami_map}"
+  #amis = "${var.ami_map}"
 }
 
 
@@ -30,8 +34,8 @@ resource "null_resource" "ansible_configure" {
   provisioner "local-exec" {
     working_dir = "${path.module}/../ansible"
     command = "ansible-playbook --vault-password-file ${path.module}/dump_to_txt.sh -i hosts -u ubuntu blockchain.yml"
-    environment {
-      ANSIBLE_VAULT_PASSWORD = "${data.external.sops_secrets.result.rpc_proxy_vault}"
-    }
+    #environment {
+    #  ANSIBLE_VAULT_PASSWORD = "${data.external.sops_secrets.result.rpc_proxy_vault}"
+    #}
   }
 }
