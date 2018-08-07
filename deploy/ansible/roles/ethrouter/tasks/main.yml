@@ -77,5 +77,5 @@
     daemon_reload: yes
     state: started
     enabled: true
-    name: "proxy{{ item }}.service"
+    name: "proxy@{{ item }}.service"
   with_sequence: end=3009 start=3000
