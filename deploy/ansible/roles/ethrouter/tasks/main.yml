@@ -66,7 +66,7 @@
 - name: Install systemd unit for proxy
   template:
     src: proxy.service
-    dest: /etc/systemd/system/proxy.service
+    dest: /etc/systemd/system/proxy@.service
     owner: root
     group: root
     mode: 0644
@@ -76,4 +76,5 @@
     daemon_reload: yes
     state: started
     enabled: true
-    name: proxy.service
+    name: "proxy{{ item }}.service"
+  with_sequence: end=3009 start=3000
