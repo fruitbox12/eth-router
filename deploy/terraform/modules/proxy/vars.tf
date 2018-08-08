@@ -2,14 +2,9 @@ variable "region" {
   default = "us-east-2"
 }
 
-
-variable "key_name" {
+variable "instance_type" {
+  default = "t2.medium"
 }
-
-
-variable "dns_name" {
-}
-
 
 variable "amis" {
   type = "map"
@@ -19,3 +14,9 @@ variable "amis" {
     "us-east-2" = "ami-82f4dae7"
   }
 }
+
+
+variable "key_name" {}
+variable "dns_name" {}
+variable "vpc_id" {}
+variable "subnet_id" {}

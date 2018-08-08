@@ -1,3 +1,3 @@
 output "public_ip" {
-  value = "${aws_instance.rpc_proxy.public_ip}"
+  value = "${aws_eip.ip.public_ip}"
 }
