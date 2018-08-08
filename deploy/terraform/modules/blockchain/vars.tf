@@ -2,16 +2,12 @@ variable "key_name" {
   default = "dev-eth-full-node-us-east-2" 
 }
 
-variable "shared_credentials_file" { 
-  default = "/Users/kyledunn/.aws/credentials" 
-}
-
-variable "shared_credentials_profile" { 
-  default = "qs" 
-}
-
 variable "region" {
   default = "us-east-2"
+}
+
+variable "instance_type" {
+  default = "t2.micro"
 }
 
 variable "amis" {
@@ -22,3 +18,6 @@ variable "amis" {
     "us-east-2" = "ami-82f4dae7"
   }
 }
+
+variable "vpc_id" {}
+variable "subnet_id" {}
