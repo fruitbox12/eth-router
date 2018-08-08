@@ -2,7 +2,7 @@ const httpProxy = require('http-proxy')
 const http = require("http")
 const url = require('url')
 const { tokens, network } = require("./config")
-const { proxyPort, targetHost, ropstenHttpPort, ropstenWsPort } = network
+const { proxyPort, targetHost, ropstenHttpPort, ropstenWsPort, mainnetWsPort, mainnetHttpPort } = network
 
 // HERE LIES: A reverse proxy server for many ethereum blockchain backends
 // - Requires valid web3 HTTP and WebSocket endpoints on target server
@@ -11,6 +11,10 @@ const { proxyPort, targetHost, ropstenHttpPort, ropstenWsPort } = network
 // - Authenticates based on presence of whitelisted tokens (which are sha256 hashes)
 
 // main function
+
+const ropstenPath = '/'
+const mainnetPath = '/mainnet'
+
 const run = () => {
   const proxy = createProxy()
   const server = handleWsRequests(createServer(proxy), proxy)
@@ -37,17 +41,39 @@ const isResponse = writable => writable.constructor.name === 'ServerResponse'
 
 const createServer = proxy => (
   http.createServer((req, res) => {
-    hasValidToken(req)
-      ? proxy.web(req, res, { target: `http://${targetHost}:${ropstenHttpPort}` })
-      : respondWithError(res, 401, "access denied")
+    var path = url.parse(req.url).pathname;
+    if ( path == ropstenPath) {
+      hasValidToken(req)
+        ? proxy.web(req, res, { target: `http://${targetHost}:${ropstenHttpPort}` })
+        : respondWithError(res, 401, "access denied")
+    } else if ( path == mainnetPath) {
+      hasValidToken(req)
+        ? proxy.web(req, res, { target: `http://${targetHost}:${mainnetHttpPort}` })
+        : respondWithError(res, 401, "access denied")
+    } else {
+      console.log("entered location not found block")
+      respondWithError(res, 404, "Not Found")
+    }
   })
 )
 
 const handleWsRequests = (server, proxy) => {
   server.on("upgrade", (req, socket, head) => {
-    hasValidToken(req)
-    ? proxy.ws(req, socket, head, { target: `ws://${targetHost}:${ropstenWsPort}` })
-    : socket.end("HTTP/1.1 401 Unauthorized\r\n\r\n")
+    var path = url.parse(req.url).pathname;
+    if ( path == ropstenPath) {
+      console.log("entered network 1000 upgrade event")
+      hasValidToken(req)
+      ? proxy.ws(req, socket, head, { target: `ws://${targetHost}:${ropstenWsPort}` })
+      : socket.end("HTTP/1.1 401 Unauthorized\r\n\r\n")
+    } else if ( path == mainnetPath) {
+      console.log("entered network 1001 upgrade event")
+      hasValidToken(req)
+      ? proxy.ws(req, socket, head, { target: `ws://${targetHost}:${mainnetWsPort}` })
+      : socket.end("HTTP/1.1 401 Unauthorized\r\n\r\n")
+    } else {
+      console.log("entered location not found block")
+      socket.end("HTTP/1.1 404 Not Found\r\n\r\n")
+    }
   })
   return server
 }

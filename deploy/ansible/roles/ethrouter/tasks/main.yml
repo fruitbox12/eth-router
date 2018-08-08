@@ -42,7 +42,7 @@
 
 - name: Deploy git repo
   git:
-    repo: https://github.com/lazzarello/eth-router.git
+    repo: "{{ repo_uri }}"
     dest: "/home/ubuntu/proxy"
     force: yes
   become: yes

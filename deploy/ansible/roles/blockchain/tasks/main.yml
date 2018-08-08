@@ -39,8 +39,8 @@
 - name: Start blockchain systemd services
   systemd: 
     daemon_reload: yes
-    state: started
-    enabled: true
+    state: "{{ 'started' if item.enabled == true else 'stopped' }}"
+    enabled: "{{ item.enabled }}"
     name: "{{ item.name }}.service"
   with_items: "{{ blockchain_apps }}"
 
