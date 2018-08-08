@@ -19,7 +19,7 @@ variable "region" {
 }
 
 variable "dns_name" {
-  default = "testnet.com"
+  default = "stg.rpc.blockchaindevlabs.com"
 }
 
 variable "ami_map" {
