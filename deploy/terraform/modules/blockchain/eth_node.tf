@@ -1,7 +1,7 @@
 resource "aws_instance" "eth_node" {
   ami           = "${lookup(var.amis, var.region)}"
   instance_type = "${var.instance_type}" 
-  key_name  = "${var.key_name}"
+  key_name      = "${var.key_name}"
 
   vpc_security_group_ids = [
     "${aws_security_group.eth_node_sg.id}"
