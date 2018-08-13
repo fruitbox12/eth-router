@@ -103,7 +103,7 @@ describe("secure proxy", () => {
 
       it("rejects a connection ;attempt", async () => {
         wsClient.on("error", err => expect(err.message).to.eql("Unexpected server response: 401"))
-      })p
+      });
     })
 
     describe("without any token", () => {
