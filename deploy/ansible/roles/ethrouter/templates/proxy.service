@@ -8,7 +8,7 @@ Type=simple
 Restart=on-failure
 ExecStart=/usr/bin/yarn prod
 Environment=NODE_ENV=production
-Environment=NODE_PORT=@
+Environment=NODE_PORT=%i
 Environment=TLS_KEY_PATH={{ certbot_path }}/privkey.pem
 Environment=TLS_CERT_PATH={{ certbot_path }}/fullchain.pem
 
