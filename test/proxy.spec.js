@@ -98,12 +98,11 @@ describe("secure proxy", () => {
     })
 
     describe("with an invalid token", () => {
-
       beforeEach(() => wsClient = new WebSocket(`ws://${targetHost}:${proxyPort}/?token=invalid`))
 
       it("rejects a connection ;attempt", async () => {
         wsClient.on("error", err => expect(err.message).to.eql("Unexpected server response: 401"))
-      });
+      })
     })
 
     describe("without any token", () => {
@@ -165,18 +164,18 @@ describe("secure proxy", () => {
 
   describe('helpers', () => {
     describe('#hasValidToken', () => {
-      it.only('returns true if url has a valid token', () => {
+      it('returns true if url has a valid token', () => {
         expect(
-          hasValidToken('http://foo.bar?token=' +
-                        'ebf427e77668d2aed05c558c15f8a2255bd9f30b69c8bac4dc7d61d0ccc832b6')
+          hasValidToken({ url: 'http://foo.bar?token=' +
+                          'ebf427e77668d2aed05c558c15f8a2255bd9f30b69c8bac4dc7d61d0ccc832b6'})
         ).to.eql(true)
 
         expect(
-          hasValidToken('http://foo.bar?token=' +
-                        'd7ea27d3d20656533a89afb196a24a1aff814c0f2ad411d82e563f7c1d917854')
+          hasValidToken({ url: 'http://foo.bar?token=' +
+                          'd7ea27d3d20656533a89afb196a24a1aff814c0f2ad411d82e563f7c1d917854'})
         ).to.eql(true)
       })
-      it.only('returns false if url lacks valid token', () => {
+      it('returns false if url lacks valid token', () => {
         expect(hasValidToken('http://foo.bar')).to.eql(false)
       })
     })

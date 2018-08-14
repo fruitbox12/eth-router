@@ -41,7 +41,7 @@ const isResponse = writable => writable.constructor.name === 'ServerResponse'
 
 const createServer = proxy => (
   http.createServer((req, res) => {
-    var path = url.parse(req.url).pathname;
+    var path = parseUrl(req.url).pathname;
     // TODO: DRY this up with #portFor helper function
     if ( path == ropstenPath) {
       hasValidToken(req)
@@ -60,7 +60,7 @@ const createServer = proxy => (
 
 const handleWsRequests = (server, proxy) => {
   server.on("upgrade", (req, socket, head) => {
-    var path = url.parse(req).pathname;
+    var path = parseUrl(req.url).pathname;
     // TODO: DRY this up with #portFor helper function
     if ( path == ropstenPath) {
       hasValidToken(req)
@@ -77,8 +77,8 @@ const handleWsRequests = (server, proxy) => {
   return server
 }
 
-const hasValidToken = (url)  =>
-  Boolean(tokens[parseUrl(url, true).query['token']])
+const hasValidToken = (req)  =>
+  Boolean(tokens[parseUrl(req.url, true).query['token']])
 
 const respondWithError = (res, code, msg) => {
   res.writeHead(code, {'Content-Type': 'application/json' })
