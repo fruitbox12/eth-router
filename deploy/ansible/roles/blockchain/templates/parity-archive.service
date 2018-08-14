@@ -7,7 +7,7 @@ Type=simple
 User={{ geth_user }} 
 Restart=on-failure
 ExecStart=/usr/bin/parity --tracing on --pruning archive \
-       --base-path /home/{{ geth_user }}/blockchains/parity/archives \
+       --base-path {{ base_path }}/parity/archives \
        --no-jsonrpc --no-ws --no-ui --port {{ p2p }}
 
 [Install]
