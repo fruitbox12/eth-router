@@ -4,30 +4,7 @@
   become: yes
   become_method: sudo
 
-  vars:
-    geth_user: ubuntu
-    geth_testnet: true
-    geth_cache: 2048
-    #geth_port: 30304
-    geth_datadir: "/home/{{ geth_user }}/blockchains/geth/testnet"
-    geth_rpc: true
-    #geth_rpcpublic: true
-    #geth_rpcaddr: 0.0.0.0
-    geth_rpcapi: "eth,net,web3"
-    geth_rpccorsdomain: "*"
-    geth_rpcvhosts: "*"
-    parity_version: "1.11.4"
-    blockchain_apps:
-      - { name: "geth", ws_sport: "8546", sport: "8545", network: "ropsten", p2p: "30303", enabled: true }
-      - { name: "parity", ws_sport: "8548", sport: "8547", network: "mainnet", p2p: "30304", enabled: true }
-      - { name: "parity-archive", ws_sport: "8548", sport: "8547", network: "mainnet", p2p: "30305", enabled: true }
-    ssh_tunnels:
-      - { name: "geth", sport: "8545", dport: "8545", network: "ropsten", ssh_hostname: "rpc.blockchaindevlabs.com" }
-      - { name: "geth-ws", sport: "8546", dport: "8546", network: "ropsten", ssh_hostname: "rpc.blockchaindevlabs.com" }
-      - { name: "parity", sport: "8547", dport: "8547", network: "mainnet", ssh_hostname: "rpc.blockchaindevlabs.com"}
-      - { name: "parity-ws", sport: "8548", dport: "8548", network: "mainnet", ssh_hostname: "rpc.blockchaindevlabs.com"}
-    private_key_name: "geth-http"
-    tunnel_user: ubuntu
+  # for vars, refer to roles/blockchain/defaults/main.yml
 
   roles:
     - blockchain

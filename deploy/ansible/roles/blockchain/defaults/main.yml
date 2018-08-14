@@ -1,19 +1,31 @@
+# The host to establish tunnels to
+proxy_hostname: "rpc.blockchaindevlabs.com"
+tunnel_user: "ubuntu"
+private_key_name: "geth-http"
 # The user that will run geth
-geth_user: ether
-# Build to be installed (see: https://geth.ethereum.org/downloads/)
-geth_build: geth-linux-amd64-1.8.2-b8b9f7f4
-geth_checksum: md5:46a76e77fc9ae4dc9f8d1cf50f3b5798
+geth_user: "ubuntu"
 # performance options
-geth_cache: 512
+geth_cache: 2048
 # net options
-geth_networkid: 1
 geth_port: 30303
-geth_datadir: /data/mainnet
+geth_testnet: true
+geth_datadir: "/home/{{ geth_user }}/blockchains/geth/testnet"
 geth_maxpeers: 25
 geth_maxpendpeers: 0
 geth_rpc: true
 geth_rpcpublic: false
-geth_rpcaddr: 127.0.0.1
+geth_rpcaddr: "127.0.0.1"
 geth_rpcapi: "eth,net,web3"
-geth_rpccorsdomain: localhost
-geth_rpcvhosts: localhost
+geth_rpccorsdomain: "*"
+geth_rpcvhosts: "*"
+parity_version: "1.11.4"
+# Configuration for systemd service templates
+blockchain_apps:
+  - { name: "geth", ws_sport: "8546", sport: "8545", network: "ropsten", p2p: "30303", enabled: true }
+  - { name: "parity", ws_sport: "8548", sport: "8547", network: "mainnet", p2p: "30304", enabled: true }
+  - { name: "parity-archive", ws_sport: "8548", sport: "8547", network: "mainnet", p2p: "30305", enabled: true }
+ssh_tunnels:
+  - { name: "geth", sport: "8545", dport: "8545", network: "ropsten", ssh_hostname: "{{ proxy_hostname }}" }
+  - { name: "geth-ws", sport: "8546", dport: "8546", network: "ropsten", ssh_hostname: "{{ proxy_hostname }}" }
+  - { name: "parity", sport: "8547", dport: "8547", network: "mainnet", ssh_hostname: "{{ proxy_hostname }}"}
+  - { name: "parity-ws", sport: "8548", dport: "8548", network: "mainnet", ssh_hostname: "{{ proxy_hostname }}"}
