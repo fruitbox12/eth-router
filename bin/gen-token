@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+echo "----- generating token..."
+shuf -i 0-9999999999999999999 -n 1 | sha256sum
