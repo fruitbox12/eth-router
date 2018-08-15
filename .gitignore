@@ -28,3 +28,5 @@ hosts
 *.retry
 
 .idea/
+variables-production.sh
+variables-staging.sh
