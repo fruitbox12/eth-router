@@ -6,6 +6,7 @@ private_key_name: "geth-http"
 geth_user: "ubuntu"
 # performance options
 geth_cache: 2048
+parity_cache_size: 4096
 # net options
 geth_port: 30303
 geth_testnet: true
