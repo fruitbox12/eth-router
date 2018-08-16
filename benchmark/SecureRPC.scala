@@ -29,6 +29,8 @@ class SecureRPC extends Simulation {
   val rpcDomain = System.getProperty("SRPC_DOMAIN")
   val rpcToken = System.getProperty("SRPC_TOKEN")
   val testPayload = """{"jsonrpc":"2.0","method":"eth_syncing","params":[],"id":74}"""
+  val concurrentUsers = System.getProperty("SRPC_USERS").toInt
+  val testIterations = System.getProperty("SRPC_ITERS").toInt
 
   val httpConf = http
     .baseURL("https://" + rpcDomain)
@@ -42,16 +44,16 @@ class SecureRPC extends Simulation {
         .header("Content-Type", "application/json")
         .queryParam("token", "${key}")
         .check(status.is(200), bodyString.is("")))
-    .pause(1)
-    .repeat(2, "i") {
+    .pause(10 milliseconds)
+    .repeat(testIterations, "i") {
       exec(http("Poke testnet JSON-RPC")
         .post("/")
         .header("Content-Type", "application/json")
         .queryParam("token", "${key}")
         .body(StringBody(testPayload)).asJSON
-        .check(status.is(200), jsonPath("$..startingBlock").ofType[String]))
-        // "startingBlock":"0x0"
-        .pause(1)
+        .check(status.is(200), jsonPath("$..jsonrpc").ofType[String]))
+        // "jsonrpc":"2.0"
+        //.pause(10 milliseconds)
     }
 
   val httpsMainnetScenario = scenario("Secure HTTP - mainnet")
@@ -61,16 +63,16 @@ class SecureRPC extends Simulation {
         .header("Content-Type", "application/json")
         .queryParam("token", "${key}")
         .check(status.is(200), bodyString.is("")))
-    .pause(1)
-    .repeat(2, "i") {
+    .pause(10 milliseconds)
+    .repeat(testIterations, "i") {
       exec(http("Poke mainnet JSON-RPC")
         .post("/mainnet")
         .header("Content-Type", "application/json")
         .queryParam("token", "${key}")
         .body(StringBody(testPayload)).asJSON
-        .check(status.is(200), jsonPath("$..startingBlock").ofType[String]))
-        // "startingBlock":"0x0"
-        .pause(1)
+        .check(status.is(200), jsonPath("$..jsonrpc").ofType[String]))
+        // "jsonrpc":"2.0"
+        //.pause(10 milliseconds)
     }
 
   val wssTestnetScenario = scenario("Secure WebSocket - testnet")
@@ -79,13 +81,13 @@ class SecureRPC extends Simulation {
       .get("/?token=${key}")
       .header("Content-Type", "application/json"))
     .exec(ws("Connect WSS testnet").open("/?token=${key}"))
-    .pause(1)
-    .repeat(2, "i") {
+    .pause(10 milliseconds)
+    .repeat(testIterations, "i") {
       exec(ws("Poke testnet WSS")
         .sendText(testPayload)
-        .check(wsAwait.within(3).until(1).jsonPath("$..startingBlock").ofType[String]))
+        .check(wsAwait.within(3).until(1).jsonPath("$..jsonrpc").ofType[String]))
         // "startingBlock":"0x0"
-        .pause(1)
+        //.pause(10 milliseconds)
     }
     .exec(ws("Close WSS testnet").close)
 
@@ -95,21 +97,21 @@ class SecureRPC extends Simulation {
       .get("/mainnet?token=${key}")
       .header("Content-Type", "application/json"))
     .exec(ws("Connect WSS mainnet").open("/mainnet?token=${key}"))
-    .pause(1)
-    .repeat(2, "i") {
+    .pause(10 milliseconds)
+    .repeat(testIterations, "i") {
       exec(ws("Poke mainnet WSS")
         .sendText(testPayload)
-        .check(wsAwait.within(3).until(1).jsonPath("$..startingBlock").ofType[String]))
+        .check(wsAwait.within(3).until(1).jsonPath("$..jsonrpc").ofType[String]))
         // "startingBlock":"0x0"
-        .pause(1)
+        //.pause(10 milliseconds)
     }
     .exec(ws("Close WSS mainnet").close)
 
   setUp(
-    httpsTestnetScenario.inject(atOnceUsers(1)),
-    httpsMainnetScenario.inject(atOnceUsers(1)),
-    wssTestnetScenario.inject(atOnceUsers(1)),
-    wssMainnetScenario.inject(atOnceUsers(1))
+    httpsTestnetScenario.inject(atOnceUsers(concurrentUsers)),
+    httpsMainnetScenario.inject(atOnceUsers(concurrentUsers)),
+    wssTestnetScenario.inject(atOnceUsers(concurrentUsers)),
+    wssMainnetScenario.inject(atOnceUsers(concurrentUsers))
   ).protocols(httpConf)
 }
 

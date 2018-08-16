@@ -36,7 +36,7 @@ mysupersecuretokeninplaintext
 6. Set up the environment 
 
 ```bash
-  $ export JAVA_OPTS="-DSRPC_TOKEN=`cat ./token.txt` -DSRPC_DOMAIN=stg.rpc.mysweetdomain.com"
+  $ export JAVA_OPTS="-DSRPC_TOKEN=`cat ./token.txt` -DSRPC_DOMAIN=stg.rpc.mysweetdomain.com -DSRPC_USERS=25 -DSRPC_ITERS=100"
 ```
 
 7. Let 'er rip
