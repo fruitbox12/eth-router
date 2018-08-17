@@ -36,3 +36,7 @@ $ export TF_VAR_shared_credentials_file=/Users/username/.aws/credentials \
          TF_VAR_shared_credentials_profile=myprofile
 $ terraform plan
 ```
+
+There is an example script at `variables-example.sh` which can be used as a template for customizing your environments. The `.gitignore` in this repo is configured to ignore files named `variables-production.sh` and `variables-staging.sh`. Any other filenames with secrets or private information could be accidently commited to the repo!
+
+Run the customized script in-place `./variables-production.sh` and all your terraform commands from that shell will use those variables until you close the shell.
