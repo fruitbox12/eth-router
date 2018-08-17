@@ -45,7 +45,7 @@
     repo: "{{ repo_uri }}"
     dest: "/home/ubuntu/proxy"
     force: yes
-    version: deployfix-engine-version
+    version: staging
   become: yes
   become_user: "ubuntu"
   notify: Restart Proxy

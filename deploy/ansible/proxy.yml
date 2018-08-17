@@ -7,7 +7,7 @@
 
   vars:
     # https://www.ubuntuupdates.org/package/nodejs_10.x/bionic/main/base/nodejs
-    nodejs_version: 10.8.0-1nodesource1
+    nodejs_version: 10.9.0-1nodesource1
     certbot_auto_renew_user: www-data
     certbot_auto_renew_minute: 20
     certbot_auto_renew_hour: 5
