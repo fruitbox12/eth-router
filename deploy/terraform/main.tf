@@ -36,7 +36,7 @@ module "blockchain" {
 # might want a local-exec for this at some point: 
 # ssh-keyscan -H {{ inventory_hostname }} >> ~/.ssh/known_hosts
 
-/* Run the Ansible playbook for the blockchain node(s) */
+/* Run the Ansible playbook for the blockchain node(s) 
 resource "null_resource" "ansible_configure_blockchain" {
   depends_on = [
     "local_file.ansible_hosts"
@@ -47,7 +47,7 @@ resource "null_resource" "ansible_configure_blockchain" {
     command = "ansible-playbook --vault-password-file ${path.module}/dump_to_txt.sh -i hosts -u ubuntu blockchain.yml -e \"proxy_hostname=${var.dns_name} data_disk=${module.blockchain.chain_data_volume}\""
   }
 }
-
+*/
 
 resource "null_resource" "prod_tokens" {
   # Stages the prod tokens file for Ansible
@@ -57,11 +57,12 @@ resource "null_resource" "prod_tokens" {
   }
 }
 
-/* Run the Ansible playbook for the proxy node(s) */
+/* Run the Ansible playbook for the proxy node(s) 
 resource "null_resource" "ansible_configure_proxy" {
   depends_on = [
     "local_file.ansible_hosts",
-    "null_resource.prod_tokens"
+    "null_resource.prod_tokens",
+    "modules.proxy.aws_eip_association.eip_assoc"
   ]
 
   provisioner "local-exec" {
@@ -69,3 +70,4 @@ resource "null_resource" "ansible_configure_proxy" {
     command = "ansible-playbook --vault-password-file ${path.module}/dump_to_txt.sh -i hosts -u ubuntu proxy.yml -e \"ssl_hostname=${var.dns_name}\""
   }
 }
+*/
