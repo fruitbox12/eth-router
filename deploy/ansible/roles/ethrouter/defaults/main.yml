@@ -1,3 +1,4 @@
+nodejs_version: 10.9.0-1nodesource1
 certbot_auto_renew_user: "www-data"
 certbot_auto_renew_minute: 20
 certbot_auto_renew_hour: 5
@@ -25,3 +26,4 @@ certbot_path: "/etc/letsencrypt/live/{{ ssl_hostname }}"
 ssh_public_key: |-
   ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDLPpPRqOR5jJetEiYNf5v1ejYYJA/KEY2WZUwH0Qz8zry7ROmyzP7wdyLAChFsYIpl3C4Azdt2uWjQBCdpYgGh35IelZLLCeQk42hvVn68wX8tkx2c6O2v/v6pJs+rZx1qrogxw7yij++CteiL1ZdKzZH5KeJzxxyQmev2b2JMilxN3wSqi3RJrVvthmrpB5DbfwSxp6cYDv/K4QyCfy9wOtDFFMowhuJhP3HniZeuCdwRP7X2YhuTBuxfr3h7dhPd/E86198hohywA97iZEWFbOUAAG1N8cidFadprdYHPzTCHqKJPQbjnCCcrCqOovsLNfZOUfu+t+7RjkpIJrt0kfAUQCLquzc24aswWUwsDjQaYPSnX3El6eXL7ztNsuc6Ep99j87REcF1Si2PX/NEeSuPawTUKZcZ6dcZPN8HDG7Gyu3e4lEQSP2q0gnWoG04PU8X5CIvsvwgA747Uvstd1LH3SebqT83KbqaHMNeO6NwQIJVEP+P0moJ+TRO+QSk83Q6xTle8aKpkE5fEcY/PzBwv2wOtbyIoB9rbdytgirVb0L+eX0/+bWoxi/+KA07SJiROYVJKA4NfTsqj1bIeBfVhH+ktLKFFmqqTIufxnrguWUu9m07xiDu7/0BoEkAkR8rVGd4slvBQ/V1Aqg3ahQZCfmfrD5LTvSIhPizXw==
 repo_uri: "https://github.com/quantstamp/eth-router.git"
+git_branch: "master"

@@ -45,7 +45,7 @@
     repo: "{{ repo_uri }}"
     dest: "/home/ubuntu/proxy"
     force: yes
-    version: staging
+    version: "{{ git_branch }}"
   become: yes
   become_user: "ubuntu"
   notify: Restart Proxy
