@@ -1,7 +1,7 @@
 const http = require("http")
 const request = require('supertest')
 const {expect} = require("chai")
-const {run } = require("../src/proxy")
+const {run, hasValidToken} = require("../src/proxy")
 const { tokens, network: { proxyPort, targetHost, ropstenHttpPort, ropstenWsPort } } = require("../src/config")
 const WebSocket = require("ws")
 
@@ -68,7 +68,12 @@ describe("secure proxy", () => {
         const response = await agent.post(`/?token=${token}`).send({bar: 'baz'}).expect(200)
         expect(response.body).to.eql({ foo: "bar" })
       })
+    })
 
+    describe('routing', () => {
+      // TODO: test routing
+      it('it routes a request to the ropsten network')
+      it('it routes a request to the mainnet')
     })
   })
 
@@ -93,7 +98,6 @@ describe("secure proxy", () => {
     })
 
     describe("with an invalid token", () => {
-
       beforeEach(() => wsClient = new WebSocket(`ws://${targetHost}:${proxyPort}/?token=invalid`))
 
       it("rejects a connection ;attempt", async () => {
@@ -148,6 +152,31 @@ describe("secure proxy", () => {
           done()
         }))
         wsClient.on("open", () => wsClient.send("foo"))
+      })
+    })
+
+    describe('routing', () => {
+      // TODO: test routing
+      it('it routes an upgrade request to the ropsten network')
+      it('it routes a request to the mainnet')
+    })
+  })
+
+  describe('helpers', () => {
+    describe('#hasValidToken', () => {
+      it('returns true if url has a valid token', () => {
+        expect(
+          hasValidToken({ url: 'http://foo.bar?token=' +
+                          'ebf427e77668d2aed05c558c15f8a2255bd9f30b69c8bac4dc7d61d0ccc832b6'})
+        ).to.eql(true)
+
+        expect(
+          hasValidToken({ url: 'http://foo.bar?token=' +
+                          'd7ea27d3d20656533a89afb196a24a1aff814c0f2ad411d82e563f7c1d917854'})
+        ).to.eql(true)
+      })
+      it('returns false if url lacks valid token', () => {
+        expect(hasValidToken('http://foo.bar')).to.eql(false)
       })
     })
   })

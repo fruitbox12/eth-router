@@ -1,6 +1,6 @@
 const httpProxy = require('http-proxy')
 const http = require("http")
-const url = require('url')
+const parseUrl = require('url-parse')
 const { tokens, network } = require("./config")
 const { proxyPort, targetHost, ropstenHttpPort, ropstenWsPort, mainnetWsPort, mainnetHttpPort } = network
 
@@ -41,7 +41,8 @@ const isResponse = writable => writable.constructor.name === 'ServerResponse'
 
 const createServer = proxy => (
   http.createServer((req, res) => {
-    var path = url.parse(req.url).pathname;
+    var path = parseUrl(req.url).pathname;
+    // TODO: DRY this up with #portFor helper function
     if ( path == ropstenPath) {
       hasValidToken(req)
         ? proxy.web(req, res, { target: `http://${targetHost}:${ropstenHttpPort}` })
@@ -59,19 +60,17 @@ const createServer = proxy => (
 
 const handleWsRequests = (server, proxy) => {
   server.on("upgrade", (req, socket, head) => {
-    var path = url.parse(req.url).pathname;
+    var path = parseUrl(req.url).pathname;
+    // TODO: DRY this up with #portFor helper function
     if ( path == ropstenPath) {
-      console.log("entered network 1000 upgrade event")
       hasValidToken(req)
-      ? proxy.ws(req, socket, head, { target: `ws://${targetHost}:${ropstenWsPort}` })
-      : socket.end("HTTP/1.1 401 Unauthorized\r\n\r\n")
+        ? proxy.ws(req, socket, head, { target: `ws://${targetHost}:${ropstenWsPort}` })
+        : socket.end("HTTP/1.1 401 Unauthorized\r\n\r\n")
     } else if ( path == mainnetPath) {
-      console.log("entered network 1001 upgrade event")
       hasValidToken(req)
-      ? proxy.ws(req, socket, head, { target: `ws://${targetHost}:${mainnetWsPort}` })
-      : socket.end("HTTP/1.1 401 Unauthorized\r\n\r\n")
+        ? proxy.ws(req, socket, head, { target: `ws://${targetHost}:${mainnetWsPort}` })
+        : socket.end("HTTP/1.1 401 Unauthorized\r\n\r\n")
     } else {
-      console.log("entered location not found block")
       socket.end("HTTP/1.1 404 Not Found\r\n\r\n")
     }
   })
@@ -79,7 +78,7 @@ const handleWsRequests = (server, proxy) => {
 }
 
 const hasValidToken = (req)  =>
-  tokens[url.parse(req.url, true).query['token']]
+  Boolean(tokens[parseUrl(req.url, true).query['token']])
 
 const respondWithError = (res, code, msg) => {
   res.writeHead(code, {'Content-Type': 'application/json' })
@@ -87,4 +86,5 @@ const respondWithError = (res, code, msg) => {
   res.end()
 }
 
-module.exports = { run }
+module.exports = { run, hasValidToken }
+ 

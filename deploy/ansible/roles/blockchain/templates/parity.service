@@ -12,7 +12,8 @@ ExecStart=/usr/bin/parity --port {{ p2p }} --ws-port {{ ws_sport }} \
        --jsonrpc-cors all --jsonrpc-hosts all \
        --jsonrpc-apis=safe,-parity \
        --db-path={{ base_path }}/parity/chains/ \
-       --no-warp
+       --cache-size {{ parity_cache_size }} --no-warp
+==== BASE ====
 
 [Install]
 WantedBy=default.target
