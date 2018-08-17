@@ -22,7 +22,7 @@
     filename: nodesource
 
 - name: Install node
-  apt: pkg=nodejs state=present update_cache=true
+  apt: pkg=nodejs={{ nodejs_version }} state=present update_cache=true
 
 - name: Add Yarn repo key
   apt_key:
@@ -45,6 +45,7 @@
     repo: "{{ repo_uri }}"
     dest: "/home/ubuntu/proxy"
     force: yes
+    version: staging
   become: yes
   become_user: "ubuntu"
   notify: Restart Proxy

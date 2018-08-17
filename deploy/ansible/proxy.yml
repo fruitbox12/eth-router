@@ -8,5 +8,5 @@
   # for vars, refer to roles/ethrouter/defaults/main.yml
 
   roles:
-    - geerlingguy.certbot
     - ethrouter
+    - geerlingguy.certbot

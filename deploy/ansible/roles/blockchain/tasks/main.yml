@@ -19,7 +19,46 @@
     state: present
     update_cache: true
 
-# TODO: put something here about creating the data directory if it is not present
+- name: Check if the chaindata directory exists
+  stat:
+    path: "{{ base_path }}/geth"
+  register: chaindata
+
+- name: Install lvm2
+  apt: name=lvm2 state=present
+  when: config_lvm and chaindata.stat.exists == False
+
+- name: Create chaindata LVM volume group
+  lvg: vg=blockchain-vg pvs={{ data_disk }} state=present
+  when: config_lvm and chaindata.stat.exists == False
+
+- name: Create chaindata LVM logical volume
+  lvol: vg=blockchain-vg lv=blockchain-lv size='100%FREE'
+  when: config_lvm and chaindata.stat.exists == False
+
+- name: Create filesystem on LVM logical volume
+  filesystem: fstype=ext4 dev=/dev/blockchain-vg/blockchain-lv
+  when: config_lvm and chaindata.stat.exists == False
+
+- name: Mount chaindata filesystem
+  mount: 
+    path: "{{ base_path }}"
+    src: /dev/blockchain-vg/blockchain-lv 
+    fstype: ext4 
+    state: mounted
+    opts: rw,user
+  when: config_lvm and chaindata.stat.exists == False
+
+- name: Create Geth and Parity directories
+  file:
+    path: "{{ base_path }}/{{ item }}"
+    state: directory
+    owner: "{{ geth_user }}"
+    mode: 0755
+  with_items:
+    - "parity"
+    - "geth"
+  when: chaindata.stat.exists == False
 
 # TODO: register a service and create a handler
  
