@@ -28,7 +28,7 @@ module "blockchain" {
   region        = "${var.region}"
   vpc_id        = "${module.network.vpc_id}"
   subnet_id     = "${module.network.subnet_id}"
-  instance_type = "c4.xlarge"
+  instance_type = "r5.xlarge" # this is quite large, consider lowering if you only run a testnet
   #amis          = "${var.ami_map}"
 }
 
