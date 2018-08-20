@@ -6,7 +6,7 @@ Requires=network.target
 Type=simple
 User={{ geth_user }} 
 Restart=on-failure
-ExecStart=/usr/bin/geth --datadir "{{ geth_datadir }}" --cache {{ geth_cache }} \
+ExecStart=/usr/bin/geth --datadir "{{ base_path }}/geth" --cache {{ geth_cache }} \
                         --syncmode "fast"{% if geth_testnet %} --testnet{% endif %} \
                         {% if geth_port is defined %} --port {{ geth_port }}{% endif %} \
                         --maxpeers {{ geth_maxpeers }} --maxpendpeers {{ geth_maxpendpeers }} \

@@ -1,4 +1,9 @@
 #!/usr/bin/env bash
 
-echo "----- generating token..."
-shuf -i 0-9999999999999999999 -n 1 | sha256sum
+if [ -z `which openssl` ]
+then
+  echo "OpenSSL executable not found. Install openssl and try again."
+else
+  echo "----- generating token..."
+  openssl rand -hex 32
+fi

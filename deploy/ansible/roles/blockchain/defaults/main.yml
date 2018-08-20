@@ -7,6 +7,9 @@ geth_user: "ubuntu"
 # performance options
 geth_cache: 2048
 parity_cache_size: 4096
+config_lvm: true
+data_disk: "/dev/xvdg"
+base_path: "/home/{{ geth_user }}/blockchains"
 # net options
 geth_port: 30303
 geth_testnet: true
@@ -24,7 +27,7 @@ parity_version: "1.11.4"
 blockchain_apps:
   - { name: "geth", ws_sport: "8546", sport: "8545", network: "ropsten", p2p: "30303", enabled: true }
   - { name: "parity", ws_sport: "8548", sport: "8547", network: "mainnet", p2p: "30304", enabled: true }
-  - { name: "parity-archive", ws_sport: "8548", sport: "8547", network: "mainnet", p2p: "30305", enabled: true }
+  - { name: "parity-archive", ws_sport: "8548", sport: "8547", network: "mainnet", p2p: "30305", enabled: false }
 ssh_tunnels:
   - { name: "geth", sport: "8545", dport: "8545", network: "ropsten", ssh_hostname: "{{ proxy_hostname }}" }
   - { name: "geth-ws", sport: "8546", dport: "8546", network: "ropsten", ssh_hostname: "{{ proxy_hostname }}" }
