@@ -8,9 +8,6 @@ resource "aws_instance" "rpc_proxy" {
   ]
   subnet_id = "${var.subnet_id}"
 
-  /* Superceded by elastic IP resource */
-  associate_public_ip_address = false
-
   tags {
     Name = "dev-rpc-proxy"
   }
