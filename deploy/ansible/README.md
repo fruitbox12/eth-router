@@ -27,10 +27,10 @@ The idea is to host all blockchain data and the RPC services to access it on a p
 * Add the IP address of the host you built with Terraform to the proxy group in `hosts`
 * Add SSH key allowed to connect to `hosts` to `ssh-agent`
 * Replace the encrypted values from [ansible-vault](https://docs.ansible.com/ansible/2.4/vault.html) with your own
-* Run the playbook `ansible-playbook -i hosts -u ubuntu --vault-id @prompt site.yml`
+* Run the playbook `ansible-playbook --vault-password-file ../terraform/dump_to_txt.sh -i hosts -u ubuntu proxy.yml -e "ssl_hostname=$TF_VAR_dns_name"`
 * Enter your master key when prompted
 * Add the IP address of your blockchain node to `hosts`
-* Run the playbook `ansible-playbook -i hosts -u ubuntu --vault-id @prompt blockchain.yml`
+* Run the playbook `ansible-playbook --vault-password-file ../terraform/dump_to_txt.sh -i hosts -u ubuntu blockchain.yml -e "proxy_hostname=$TF_VAR_dns_name data_disk=/dev/xvdg"`
 
 ## Architecture considerations
 
@@ -44,3 +44,8 @@ In contrast, on the same date a 8TB spining disk HDD costs about US $160. 1TB SS
 
 All these proxy tricks require some precise port mapping between many different applications. This information is located in the list `vars.blockchain_apps` in the `blockchain.yml` playbook.
 
+### Memory resources
+
+The go-ethereum client `geth` has higher than average resource requirments. Notably, for mainnet blockchain sync a disk cache of > 4GB is normal at the time of this writing. This limits which EC2 instances are compatible with this node type.
+
+The testnets require significantly lower resources. Trial and error is the best option.
