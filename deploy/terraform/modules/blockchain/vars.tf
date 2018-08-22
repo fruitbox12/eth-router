@@ -21,3 +21,4 @@ variable "amis" {
 
 variable "vpc_id" {}
 variable "subnet_id" {}
+variable "num_nodes" {}

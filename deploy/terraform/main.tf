@@ -29,6 +29,7 @@ module "blockchain" {
   vpc_id        = "${module.network.vpc_id}"
   subnet_id     = "${module.network.subnet_id}"
   instance_type = "r5.xlarge" # this is quite large, consider lowering if you only run a testnet
+  num_nodes     = "${var.num_blockchain_nodes}"
   #amis          = "${var.ami_map}"
 }
 

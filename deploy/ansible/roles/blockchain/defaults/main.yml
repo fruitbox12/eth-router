@@ -24,12 +24,13 @@ geth_rpccorsdomain: "*"
 geth_rpcvhosts: "*"
 parity_version: "1.11.4"
 # Configuration for systemd service templates
+base_port: 8000
 blockchain_apps:
   - { name: "geth", ws_sport: "8546", sport: "8545", network: "ropsten", p2p: "30303", enabled: true }
   - { name: "parity", ws_sport: "8548", sport: "8547", network: "mainnet", p2p: "30304", enabled: true }
   - { name: "parity-archive", ws_sport: "8548", sport: "8547", network: "mainnet", p2p: "30305", enabled: false }
 ssh_tunnels:
-  - { name: "geth", sport: "8545", dport: "8545", network: "ropsten", ssh_hostname: "{{ proxy_hostname }}" }
-  - { name: "geth-ws", sport: "8546", dport: "8546", network: "ropsten", ssh_hostname: "{{ proxy_hostname }}" }
-  - { name: "parity", sport: "8547", dport: "8547", network: "mainnet", ssh_hostname: "{{ proxy_hostname }}"}
-  - { name: "parity-ws", sport: "8548", dport: "8548", network: "mainnet", ssh_hostname: "{{ proxy_hostname }}"}
+  - { name: "geth", sport: "8545", dport: "{{ base_port + 545 }}", network: "ropsten", ssh_hostname: "{{ proxy_hostname }}" }
+  - { name: "geth-ws", sport: "8546", dport: "{{ base_port + 546 }}", network: "ropsten", ssh_hostname: "{{ proxy_hostname }}" }
+  - { name: "parity", sport: "8547", dport: "{{ base_port + 547 }}", network: "mainnet", ssh_hostname: "{{ proxy_hostname }}"}
+  - { name: "parity-ws", sport: "8548", dport: "{{ base_port + 548 }}", network: "mainnet", ssh_hostname: "{{ proxy_hostname }}"}

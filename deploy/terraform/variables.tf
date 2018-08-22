@@ -19,7 +19,11 @@ variable "region" {
 }
 
 variable "dns_name" {
-  default = "stg.rpc.blockchaindevlabs.com"
+  default = "rpc.blockchaindevlabs.com"
+}
+
+variable "num_blockchain_nodes" {
+  default = 3
 }
 
 variable "ami_map" {

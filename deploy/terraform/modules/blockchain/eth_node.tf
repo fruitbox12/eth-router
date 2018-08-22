@@ -1,4 +1,5 @@
 resource "aws_instance" "eth_node" {
+  count         = "${var.num_nodes}"
   ami           = "${lookup(var.amis, var.region)}"
   instance_type = "${var.instance_type}" 
   key_name      = "${var.key_name}"
@@ -23,20 +24,23 @@ resource "aws_instance" "eth_node" {
   }
 
   tags {
-    "Name" = "dev-eth-node"
+    "Name" = "dev-eth-node-${count.index}"
+    "base_port"  = "${(count.index + 8) * 1000}"
   }
 }
 
 
 resource "aws_volume_attachment" "chain_data" {
+  count       = "${var.num_nodes}"
   device_name = "/dev/xvdg"
-  volume_id   = "${aws_ebs_volume.chain_data.id}"
-  instance_id = "${aws_instance.eth_node.id}"
+  volume_id   = "${element(aws_ebs_volume.chain_data.*.id, count.index)}"
+  instance_id = "${element(aws_instance.eth_node.*.id, count.index)}"
 }
 
 
 resource "aws_ebs_volume" "chain_data" {
-  availability_zone = "${aws_instance.eth_node.availability_zone}"
+  count             = "${var.num_nodes}"
+  availability_zone = "${element(aws_instance.eth_node.*.availability_zone, count.index)}"
 
   # Size in GiB
   size              = 1000
