@@ -9,6 +9,22 @@ module "network" {
   source = "./modules/network"
 }
 
+terraform {
+  backend "s3" {
+    bucket = "prod-rpc-terraform-state"
+    key    = "data/files"
+    region = "us-west-2"
+  }
+}
+
+data "terraform_remote_state" "network" {
+  backend = "s3"
+  config {
+    bucket = "prod-rpc-terraform-state"
+    key    = "data/files/terraform.tfstate"
+    region = "us-west-2"
+  }
+}
 
 module "proxy" {
   source        = "./modules/proxy"
