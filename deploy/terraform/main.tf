@@ -17,15 +17,6 @@ terraform {
   }
 }
 
-data "terraform_remote_state" "network" {
-  backend = "s3"
-  config {
-    bucket = "prod-rpc-terraform-state"
-    key    = "data/files/terraform.tfstate"
-    region = "us-west-2"
-  }
-}
-
 module "proxy" {
   source        = "./modules/proxy"
   key_name      = "${var.rpc_proxy_key_name}" 
