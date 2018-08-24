@@ -9,7 +9,7 @@ resource "aws_instance" "rpc_proxy" {
   subnet_id = "${var.subnet_id}"
 
   tags {
-    Name = "dev-rpc-proxy"
+    Name = "${var.working_environment}-rpc-proxy"
   }
 }
 
@@ -41,8 +41,8 @@ resource "aws_eip_association" "eip_assoc" {
 
 
 resource "aws_security_group" "proxy_sg" {
-  name        = "dev_proxy_sg"
-  description = "Dev proxy security group"
+  name        = "${var.working_environment}_proxy_sg"
+  description = "${var.working_environment} proxy security group"
   vpc_id      = "${var.vpc_id}"
 
   ingress {
@@ -96,7 +96,7 @@ resource "aws_security_group" "proxy_sg" {
   }
 
   tags {
-    Name = "dev-proxy-sg"
+    Name = "${var.working_environment}-proxy-sg"
   }
 }
 

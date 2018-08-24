@@ -3,7 +3,7 @@ resource "aws_vpc" "main" {
   enable_dns_support   = true
   enable_dns_hostnames = true
   tags {
-    Name = "dev-rpc-vpc"
+    Name = "${var.working_environment}-rpc-vpc"
   }
 }
 
@@ -19,7 +19,7 @@ resource "aws_subnet" "main" {
   map_public_ip_on_launch = false
 
   tags {
-    Name = "dev-rpc-subnet"
+    Name = "${var.working_environment}-rpc-subnet"
   }
 }
 
@@ -28,8 +28,7 @@ resource "aws_route_table" "main" {
   vpc_id = "${aws_vpc.main.id}"
 
   tags {
-    Name        = "dev-route-table"
-    #Environment = "${var.environment}"
+    Name = "${var.working_environment}-route-table"
   }
 }
 

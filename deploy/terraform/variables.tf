@@ -26,6 +26,10 @@ variable "num_blockchain_nodes" {
   default = 3
 }
 
+variable "working_environment" {
+  default = "dev"
+}
+
 variable "ami_map" {
   type = "map"
   default = {
