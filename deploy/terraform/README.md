@@ -32,6 +32,8 @@ terraform output ip
 
 After the instance is up, ping the specified DNS name to check availablity. If it's online, proceed to configure and run the Ansible playbooks.
 
+There is a known issue with detaching security groups when destroying resources. If you get a timeout when updating any information in a security group, you must manually remove it from running instances before `terraform apply` will work without an exception.
+
 ## AWS credentials
 
 You will need to pass values for two variables for your environment.
