@@ -32,6 +32,8 @@ The idea is to host all blockchain data and the RPC services to access it on a p
 * Add the IP address of your blockchain node to `hosts`
 * Run the playbook `ansible-playbook --vault-password-file ../terraform/dump_to_txt.sh -i hosts -u ubuntu blockchain.yml -e "proxy_hostname=$TF_VAR_dns_name data_disk=/dev/xvdg"`
 
+Note the `data_disk` variable which is passed at runtime. There are some instance sized, notably the [R Memory Optimized](https://aws.amazon.com/ec2/instance-types/) series which uses NVMe storage and has device strings that resemble `/dev/nvme[0-9]`.
+
 ## Architecture considerations
 
 ### Data storage
