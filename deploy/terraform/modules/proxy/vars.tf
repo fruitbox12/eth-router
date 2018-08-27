@@ -20,3 +20,4 @@ variable "key_name" {}
 variable "dns_name" {}
 variable "vpc_id" {}
 variable "subnet_id" {}
+variable "working_environment" {}

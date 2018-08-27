@@ -23,7 +23,11 @@ variable "dns_name" {
 }
 
 variable "num_blockchain_nodes" {
-  default = 3
+  default = 1
+}
+
+variable "working_environment" {
+  default = "dev"
 }
 
 variable "ami_map" {

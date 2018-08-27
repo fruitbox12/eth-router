@@ -38,7 +38,7 @@ Note the `data_disk` variable which is passed at runtime. There are some instanc
 
 ### Data storage
 
-It's possible to run both playbooks on the same instance. As of 2018-07-05 the Ethereum blockchain data exceeds 1TB for all the networks included by default in this playbook. This playbook does not provision a 1TB volume in cloud storage, because that would be mean. If you have these resources available, pull requests accepted.
+It's possible to run both playbooks on the same instance. As of 2018-07-05 the Ethereum blockchain data exceeds 1TB for all the networks included by default in this playbook. This playbook provisions a 1TB volume in cloud storage. Change this variable if you do not want all networks in this playbook to run.
 
 In contrast, on the same date a 8TB spining disk HDD costs about US $160. 1TB SSDs get cheaper by the month. This lead to the movtivation to decouple the blockchain data from the proxy in this repo.
 

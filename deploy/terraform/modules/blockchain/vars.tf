@@ -19,6 +19,11 @@ variable "amis" {
   }
 }
 
+variable "device_name" {
+  default = "/dev/xvdg"
+}
+
 variable "vpc_id" {}
 variable "subnet_id" {}
 variable "num_nodes" {}
+variable "working_environment" {}

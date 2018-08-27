@@ -7,8 +7,16 @@ provider "aws" {
 /* Creates a VPC, shared subnet, and gateway */
 module "network" {
   source = "./modules/network"
+  working_environment = "${var.working_environment}"
 }
 
+terraform {
+  backend "s3" {
+    bucket = "prod-rpc-terraform-state"
+    key    = "data/files"
+    region = "us-west-2"
+  }
+}
 
 module "proxy" {
   source        = "./modules/proxy"
@@ -18,6 +26,7 @@ module "proxy" {
   vpc_id        = "${module.network.vpc_id}"
   subnet_id     = "${module.network.subnet_id}"
   instance_type = "t2.medium"
+  working_environment = "${var.working_environment}"
   #amis          = "${var.ami_map}"
 }
 
@@ -30,6 +39,7 @@ module "blockchain" {
   subnet_id     = "${module.network.subnet_id}"
   instance_type = "r5.xlarge" # this is quite large, consider lowering if you only run a testnet
   num_nodes     = "${var.num_blockchain_nodes}"
+  working_environment = "${var.working_environment}"
   #amis          = "${var.ami_map}"
 }
 

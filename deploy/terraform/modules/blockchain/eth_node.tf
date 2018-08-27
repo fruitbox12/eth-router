@@ -24,7 +24,7 @@ resource "aws_instance" "eth_node" {
   }
 
   tags {
-    "Name" = "dev-eth-node-${count.index}"
+    "Name" = "${var.working_environment}-eth-node-${count.index}"
     "base_port"  = "${(count.index + 8) * 1000}"
   }
 }
@@ -32,7 +32,7 @@ resource "aws_instance" "eth_node" {
 
 resource "aws_volume_attachment" "chain_data" {
   count       = "${var.num_nodes}"
-  device_name = "/dev/xvdg"
+  device_name = "${var.device_name}"
   volume_id   = "${element(aws_ebs_volume.chain_data.*.id, count.index)}"
   instance_id = "${element(aws_instance.eth_node.*.id, count.index)}"
 }
@@ -46,13 +46,13 @@ resource "aws_ebs_volume" "chain_data" {
   size              = 1000
 
   tags {
-    "Name" = "dev-eth-node-chaindata"
+    "Name" = "${var.working_environment}-eth-node-chaindata"
   }
 }
 
 
 resource "aws_security_group" "eth_node_sg" {
-  name        = "eth-node-sg"
+  name        = "${var.working_environment}-eth-node-sg"
   description = "Allow inbound/outbound traffic"
   vpc_id      = "${var.vpc_id}"
 
@@ -90,6 +90,6 @@ resource "aws_security_group" "eth_node_sg" {
   }
 
   tags {
-    Name = "eth-node-sg"
+    Name = "${var.working_environment}-eth-node-sg"
   }
 }
