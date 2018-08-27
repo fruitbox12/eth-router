@@ -56,3 +56,9 @@ $ terraform plan
 There is an example script at `variables-example.sh` which can be used as a template for customizing your environments. The `.gitignore` in this repo is configured to ignore files named `variables-production.sh` and `variables-staging.sh`. Any other filenames with secrets or private information could be accidently commited to the repo!
 
 Run the customized script in-place `./variables-production.sh` and all your terraform commands from that shell will use those variables until you close the shell.
+
+# Environments and Workspaces
+
+State is shared using the S3 backend. Workspaces can be used to isolate different environments for the same configuration. Resources are prefixed with the value of the variable named `working_environment` at the root level. The default is `dev`. 
+
+Different environments may have different instance counts. For more than one blockchain node, change the value of the variable `num_blockchain_nodes` in the root level variables file.
