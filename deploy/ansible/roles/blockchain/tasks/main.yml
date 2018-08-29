@@ -65,7 +65,7 @@
 - name: Install blockchain systemd services
   template:
     src: "{{ item.name }}.service"
-    dest: /lib/systemd/system/{{ item.name }}.service
+    dest: "/lib/systemd/system/{{ item.name }}-{{ item.network }}.service"
     owner: root
     group: root
     mode: 0644
@@ -74,13 +74,14 @@
     - sport: "{{ item.sport }}"
     - ws_sport: "{{ item.ws_sport }}"
     - p2p: "{{ item.p2p }}"
+    - ropsten: "{{ true if item.network == 'ropsten' else false }}"
 
 - name: Start blockchain systemd services
   systemd: 
     daemon_reload: yes
     state: "{{ 'started' if item.enabled == true else 'stopped' }}"
     enabled: "{{ item.enabled }}"
-    name: "{{ item.name }}.service"
+    name: "{{ item.name }}-{{ item.network }}.service"
   with_items: "{{ blockchain_apps }}"
 
 # Reverse SSH tunnel time!
