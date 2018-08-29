@@ -13,7 +13,6 @@ base_path: "/home/{{ geth_user }}/blockchains"
 # net options
 geth_port: 30303
 geth_testnet: true
-geth_datadir: "/home/{{ geth_user }}/blockchains/geth/testnet"
 geth_maxpeers: 25
 geth_maxpendpeers: 0
 geth_rpc: true
@@ -27,7 +26,8 @@ parity_version: "1.11.4"
 base_port: 8000
 blockchain_apps:
   - { name: "geth", ws_sport: "8546", sport: "8545", network: "ropsten", p2p: "30303", enabled: true }
-  - { name: "parity", ws_sport: "8548", sport: "8547", network: "mainnet", p2p: "30304", enabled: true }
+  - { name: "geth", ws_sport: "8548", sport: "8547", network: "mainnet", p2p: "30306", enabled: true }
+  - { name: "parity", ws_sport: "8548", sport: "8547", network: "mainnet", p2p: "30304", enabled: false }
   - { name: "parity-archive", ws_sport: "8548", sport: "8547", network: "mainnet", p2p: "30305", enabled: false }
 ssh_tunnels:
   - { name: "geth", sport: "8545", dport: "{{ base_port + 545 }}", network: "ropsten", ssh_hostname: "{{ proxy_hostname }}" }

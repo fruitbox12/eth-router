@@ -6,9 +6,10 @@ Requires=network.target
 Type=simple
 User={{ geth_user }} 
 Restart=on-failure
-ExecStart=/usr/bin/geth --datadir "{{ base_path }}/geth" --cache {{ geth_cache }} \
-                        --syncmode "fast"{% if geth_testnet %} --testnet{% endif %} \
-                        {% if geth_port is defined %} --port {{ geth_port }}{% endif %} \
+ExecStart=/usr/bin/geth --datadir "{{ base_path }}/geth{% if ropsten %}/ropsten{% endif %}" \
+                        --cache {{ geth_cache }} \
+                        --syncmode "fast"{% if ropsten %} --testnet{% endif %} \
+                        {% if p2p is defined %} --port {{ p2p }}{% endif %} \
                         --maxpeers {{ geth_maxpeers }} --maxpendpeers {{ geth_maxpendpeers }} \
                         {% if geth_rpc is defined and geth_rpc == true %} --rpc --rpcaddr {{ geth_rpcaddr }} \
                         --rpcport {{ sport }} --rpcapi {{ geth_rpcapi }} \
