@@ -45,9 +45,13 @@ resource "aws_ebs_volume" "chain_data" {
   # Size in GiB
   size              = 1000
 
+  # Boostrap the node from a semi-synced starting point
+  snapshot_id       = "${var.chaindata_ebs_snapshot_id}"
+
   tags {
     "Name" = "${var.working_environment}-eth-node-chaindata"
   }
+
 }
 
 

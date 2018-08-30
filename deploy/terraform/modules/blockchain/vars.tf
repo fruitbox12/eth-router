@@ -27,3 +27,4 @@ variable "vpc_id" {}
 variable "subnet_id" {}
 variable "num_nodes" {}
 variable "working_environment" {}
+variable "chaindata_ebs_snapshot_id" {}
