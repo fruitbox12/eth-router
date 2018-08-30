@@ -122,3 +122,10 @@
     enabled: true
     name: secure-tunnel@{{ item.name }}.service
   with_items: "{{ ssh_tunnels }}"
+
+- name: Install Nginx
+  apt: pkg=nginx state=present update_cache=true
+
+- name: Copy configuration for Nginx proxy
+  template: src=nginx-munin.conf dest=/etc/nginx/sites-available/default
+  notify: Restart Nginx

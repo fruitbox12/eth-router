@@ -1,0 +1,13 @@
+---
+- name: Start Nginx
+  service: name=nginx state=started
+
+- name: Restart Nginx
+  service: name=nginx state=restarted enabled=yes
+
+- name: Restart Proxy
+  service: 
+    name: "proxy@{{ item }}.service"
+    state: restarted
+    enabled: yes
+  with_sequence: end=3009 start=3000
