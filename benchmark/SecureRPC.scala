@@ -36,12 +36,12 @@ class SecureRPC extends Simulation {
   def rpcCallFromDistribution(): String = {
     val theChoice = r.nextFloat
 
-    if (theChoice < 0.01) return """{"jsonrpc": "2.0", "method": "eth_protocolVersion", "params": [], "id": 3833}"""
-    else if (theChoice < 0.02) return """{"jsonrpc": "2.0", "method": "eth_gasPrice", "params": [], "id": 103949}"""
-    else if (theChoice < 0.04) return """{"jsonrpc": "2.0", "method": "eth_getBlockByNumber", "params": ["latest", false], "id": 4641}"""
-    else if (theChoice < 0.09) return """{"jsonrpc": "2.0", "method": "eth_getTransactionReceipt", "params": ["0x42b9f826becd38be26a1927d88aff18c054f6872214156f3addaad03837b7e07"], "id": 103950}"""
-    else if (theChoice < 0.16) return """{"jsonrpc":"2.0","id":117112,"method":"eth_call","params":[{"data":"0xd42ad6ea","to":"0x05f57f75edadaf2758250adb5999ab4fcd7241d4"},"latest"]}"""
-    else if (theChoice < 0.24) return """{"jsonrpc": "2.0", "method": "eth_getFilterChanges", "params": ["0xae99bc38ab49c1d3154d3e1276f15bc3"], "id": 3836}"""
+    if (theChoice < 0.02) return """{"jsonrpc": "2.0", "method": "eth_protocolVersion", "params": [], "id": 3833}"""
+    else if (theChoice < 0.04) return """{"jsonrpc": "2.0", "method": "eth_gasPrice", "params": [], "id": 103949}"""
+    else if (theChoice < 0.09) return """{"jsonrpc": "2.0", "method": "eth_getBlockByNumber", "params": ["latest", false], "id": 4641}"""
+    else if (theChoice < 0.16) return """{"jsonrpc": "2.0", "method": "eth_getTransactionReceipt", "params": ["0x42b9f826becd38be26a1927d88aff18c054f6872214156f3addaad03837b7e07"], "id": 103950}"""
+    else if (theChoice < 0.24) return """{"jsonrpc":"2.0","id":117112,"method":"eth_call","params":[{"data":"0xd42ad6ea","to":"0x05f57f75edadaf2758250adb5999ab4fcd7241d4"},"latest"]}"""
+    else if (theChoice < 0.36) return """{"jsonrpc": "2.0", "method": "eth_getFilterChanges", "params": ["0xae99bc38ab49c1d3154d3e1276f15bc3"], "id": 3836}"""
     else return """{"jsonrpc": "2.0", "method": "eth_blockNumber", "params": [], "id": 3756}""" 
   
   }
