@@ -1,3 +1,4 @@
 ---
 - src: geerlingguy.certbot
 - src: geerlingguy.git
+- src: geerlingguy.munin

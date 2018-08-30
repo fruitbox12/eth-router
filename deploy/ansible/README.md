@@ -24,6 +24,7 @@ The idea is to host all blockchain data and the RPC services to access it on a p
 
 * Launch your AWS services with the Terraform template in this repository
 * Install ansible
+* Install roles `ansible-galaxy install -r requirements.yml`
 * Add the IP address of the host you built with Terraform to the proxy group in `hosts`
 * Add SSH key allowed to connect to `hosts` to `ssh-agent`
 * Replace the encrypted values from [ansible-vault](https://docs.ansible.com/ansible/2.4/vault.html) with your own
