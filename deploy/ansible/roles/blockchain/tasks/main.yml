@@ -139,7 +139,7 @@
     dest: "/usr/share/munin/plugins/{{ item }}"
     owner: root
     group: root
-    mode: 744
+    mode: 0755
   with_items:
     - block_number.py 
     - peer_count.py
