@@ -43,6 +43,13 @@ module "blockchain" {
   #amis          = "${var.ami_map}"
 }
 
+resource "null_resource" "geth_munin_plugins" {
+  # Stages the geth munin plugins for Ansible
+  provisioner "local-exec" {
+    working_dir = "${path.module}/../ansible/roles/blockchain/files/"
+    command     = "cp ${path.module}/../../munin_plugins/eth/*.py ."
+  }
+}
 
 # might want a local-exec for this at some point: 
 # ssh-keyscan -H {{ inventory_hostname }} >> ~/.ssh/known_hosts
