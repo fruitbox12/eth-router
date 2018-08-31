@@ -129,3 +129,29 @@
 - name: Copy configuration for Nginx proxy
   template: src=nginx-munin.conf dest=/etc/nginx/sites-available/default
   notify: Restart Nginx
+
+- name: Install Python3 for munin plugins
+  apt: pkg=python3 state=present update_cache=true
+
+- name: Install munin plugins for geth monitoring
+  copy:
+    src: "{{ item }}"
+    dest: "/usr/share/munin/plugins/{{ item }}"
+    owner: root
+    group: root
+    mode: 744
+  with_items:
+    - block_number.py 
+    - peer_count.py
+
+- name: Activate munin plugins for geth monitoring
+  file:
+    src: "/usr/share/munin/plugins/{{ item }}"
+    dest: "/etc/munin/plugins/{{ item }}"
+    owner: root
+    group: root
+    state: link
+  with_items:
+    - block_number.py
+    - peer_count.py
+  notify: Restart Munin
