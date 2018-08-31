@@ -26,7 +26,7 @@ class TestOutputMethods(unittest.TestCase):
         output_values(output.write, mockCall)
 
         output.seek(0)
-        self.assertEqual("plugins.value 42",
+        self.assertEqual("peers.value 42",
             output.read())
 
     def test_config_output(self):
@@ -35,7 +35,7 @@ class TestOutputMethods(unittest.TestCase):
         output_config(output.write)
 
         output.seek(0)
-        self.assertEqual("graph_title Geth Peersplugins.label Number of connected peers",
+        self.assertEqual("graph_title Geth Peerspeers.label Number of connected peers",
             output.read())
 
 if __name__ == "__main__":

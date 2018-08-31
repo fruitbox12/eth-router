@@ -25,7 +25,7 @@ class TestOutputMethods(unittest.TestCase):
         output_values(output.write, mockCall)
 
         output.seek(0)
-        self.assertEqual("plugins.value 42",
+        self.assertEqual("block.value 42",
             output.read())
 
     def test_config_output(self):
@@ -34,7 +34,7 @@ class TestOutputMethods(unittest.TestCase):
         output_config(output.write)
 
         output.seek(0)
-        self.assertEqual("graph_title Geth Current Blockplugins.label The latest available block",
+        self.assertEqual("graph_title Geth Current Blockblock.label The latest available block",
             output.read())
 
 if __name__ == "__main__":

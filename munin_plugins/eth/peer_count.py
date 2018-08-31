@@ -21,7 +21,7 @@ def usage(out=print):
 
 def output_config(out=print):
     out("graph_title {0}".format(title))
-    out("plugins.label {0}".format(description))
+    out("peers.label {0}".format(description))
 
 def output_values(out=print, fetch=urlopen):
     numberOfPeers = ""
@@ -33,7 +33,7 @@ def output_values(out=print, fetch=urlopen):
         pass
     except URLError:
         pass
-    out("plugins.value {0}".format(int(numberOfPeers, 16)))
+    out("peers.value {0}".format(int(numberOfPeers, 16)))
 
 if __name__ == "__main__":
 

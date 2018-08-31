@@ -21,7 +21,7 @@ def usage(out=print):
 
 def output_config(out=print):
     out("graph_title {0}".format(title))
-    out("plugins.label {0}".format(description))
+    out("block.label {0}".format(description))
 
 def output_values(out=print, fetch=urlopen):
     currentBlock = ""
@@ -33,7 +33,7 @@ def output_values(out=print, fetch=urlopen):
         pass
     except URLError:
         pass
-    out("plugins.value {0}".format(int(currentBlock, 16)))
+    out("block.value {0}".format(int(currentBlock, 16)))
 
 if __name__ == "__main__":
 
