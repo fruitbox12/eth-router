@@ -154,3 +154,4 @@
   with_items:
     - block_number.py
     - peer_count.py
+  notify: Restart Munin
