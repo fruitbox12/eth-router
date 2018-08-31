@@ -11,3 +11,6 @@
     state: restarted
     enabled: yes
   with_sequence: end=3009 start=3000
+
+- name: Restart Munin
+  service: name=munin state=restarted enabled=yes
