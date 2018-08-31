@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 
 from sys import argv
-from urllib.request import urlopen 
+from urllib.request import urlopen, Request
 from urllib.error import URLError
+from json import loads
 
 # TODO - templatize
 rpcHttpEndpoint = "http://127.0.0.1:8547"
@@ -25,15 +26,17 @@ def output_config(out=print):
 def output_values(out=print, fetch=urlopen):
     numberOfPeers = ""
     try:
-        numberOfPeers = fetch(rpcHttpEndpoint, rpcPayload.encode())
+        req = Request(rpcHttpEndpoint, rpcPayload.encode())
+        req.add_header("Content-Type", "application/json")
+        numberOfPeers = loads(fetch(req).read().decode()).get('result')
     except ConnectionRefusedError:
         pass
     except URLError:
         pass
-    out("plugins.value {0}".format(numberOfPeers))
+    out("plugins.value {0}".format(int(numberOfPeers, 16)))
 
 if __name__ == "__main__":
-    
+
     args = argv[1:]
     argslen = len(args)
 

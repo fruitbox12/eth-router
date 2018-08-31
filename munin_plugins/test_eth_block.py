@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 from eth.block_number import *
-from io import StringIO
+from io import StringIO, BytesIO
 import unittest
 
 class TestOutputMethods(unittest.TestCase):
@@ -18,7 +18,11 @@ class TestOutputMethods(unittest.TestCase):
     def test_metrics_output(self):
         output = StringIO()
 
-        output_values(output.write, lambda h, p: 42)
+        mockOutput = BytesIO()
+        mockOutput.write('{ "result": "0x2A" }'.encode())
+        mockOutput.seek(0)
+        mockCall = lambda r: mockOutput
+        output_values(output.write, mockCall)
 
         output.seek(0)
         self.assertEqual("plugins.value 42",
