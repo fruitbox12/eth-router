@@ -13,14 +13,14 @@ title = "Geth Peers"
 description = "Number of connected peers"
 
 def usage(out=print):
-    out(f"Munin plugin to report {title}")
+    out("Munin plugin to report {0}".format(title))
     out("")
     out("./peer_count.py config - Display munin chart params")
     out("./peer_count.py - Fetch values and print to screen")
 
 def output_config(out=print):
-    out(f"graph_title {title}")
-    out(f"plugins.label {description}")
+    out("graph_title {0}".format(title))
+    out("plugins.label {0}".format(description))
 
 def output_values(out=print, fetch=urlopen):
     numberOfPeers = ""
@@ -30,7 +30,7 @@ def output_values(out=print, fetch=urlopen):
         pass
     except URLError:
         pass
-    out(f"plugins.value {numberOfPeers}")
+    out("plugins.value {0}".format(numberOfPeers))
 
 if __name__ == "__main__":
     
