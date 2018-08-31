@@ -58,6 +58,7 @@
   with_items:
     - "parity"
     - "geth"
+    - "geth-ropsten"
   when: chaindata.stat.exists == False
 
 # TODO: register a service and create a handler

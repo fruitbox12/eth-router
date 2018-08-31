@@ -6,7 +6,7 @@ Requires=network.target
 Type=simple
 User={{ geth_user }} 
 Restart=on-failure
-ExecStart=/usr/bin/geth --datadir "{{ base_path }}/geth{% if ropsten %}/ropsten{% endif %}" \
+ExecStart=/usr/bin/geth --datadir "{{ base_path }}/geth{% if ropsten %}-ropsten{% endif %}" \
                         --cache {{ geth_cache }} \
                         --syncmode "fast"{% if ropsten %} --testnet{% endif %} \
                         {% if p2p is defined %} --port {{ p2p }}{% endif %} \
