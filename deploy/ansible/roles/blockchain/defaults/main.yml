@@ -5,7 +5,7 @@ private_key_name: "geth-http"
 # The user that will run geth
 geth_user: "ubuntu"
 # performance options
-geth_cache: 2048
+geth_cache: 4096
 parity_cache_size: 4096
 config_lvm: true
 data_disk: "/dev/xvdg"

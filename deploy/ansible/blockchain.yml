@@ -7,4 +7,5 @@
   # for vars, refer to roles/blockchain/defaults/main.yml
 
   roles:
+    - geerlingguy.munin
     - blockchain
