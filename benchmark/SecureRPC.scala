@@ -123,9 +123,9 @@ class SecureRPC extends Simulation {
 
   setUp(
     httpsTestnetScenario.inject(atOnceUsers(concurrentUsers)),
-    //httpsMainnetScenario.inject(atOnceUsers(concurrentUsers)),
-    wssTestnetScenario.inject(atOnceUsers(concurrentUsers))
-    //wssMainnetScenario.inject(atOnceUsers(concurrentUsers))
+    httpsMainnetScenario.inject(atOnceUsers(concurrentUsers)),
+    wssTestnetScenario.inject(atOnceUsers(concurrentUsers)),
+    wssMainnetScenario.inject(atOnceUsers(concurrentUsers))
   ).protocols(httpConf)
 }
 
