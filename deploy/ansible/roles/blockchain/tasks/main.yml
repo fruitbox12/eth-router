@@ -155,4 +155,32 @@
   with_items:
     - block_number.py
     - peer_count.py
+
+- name: Install PagerDuty client for munin
+  copy:
+    src: "pagerduty_munin.py"
+    dest: "/usr/local/bin/pagerduty_munin.py"
+    owner: root
+    group: root
+    mode: 0755
+
+- name: Enable PagerDuty notifications for the Geth host
+  lineinfile:
+    path: /etc/munin/munin-conf.d/hosts.conf
+    line: "{{ item }}"
+  with_items:
+    - "peers.warning 2:"
+    - "peers.critical 0:"
+    - "load.warning 0.2"
+    - "load.critical 0.4"
+    - "contacts pagerduty"
+  notify: Restart Munin
+
+- name: Enable PagerDuty notifications based on munin metrics
+  lineinfile:
+    path: /etc/munin/munin.conf
+    line: "{{ item }}"
+  with_items:
+    - "contact.pagerduty.command /usr/local/bin/pagerduty_munin.py {{ pagerduty_integration_key }}"
+    - "contact.pagerduty.always_send critical"
   notify: Restart Munin

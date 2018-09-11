@@ -24,7 +24,7 @@ def output_config(out=print):
     out("block.label {0}".format(description))
 
 def output_values(out=print, fetch=urlopen):
-    currentBlock = ""
+    currentBlock = "0x0"
     try:
         req = Request(rpcHttpEndpoint, rpcPayload.encode())
         req.add_header("Content-Type", "application/json")

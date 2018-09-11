@@ -24,7 +24,7 @@ def output_config(out=print):
     out("peers.label {0}".format(description))
 
 def output_values(out=print, fetch=urlopen):
-    numberOfPeers = ""
+    numberOfPeers = "0x0"
     try:
         req = Request(rpcHttpEndpoint, rpcPayload.encode())
         req.add_header("Content-Type", "application/json")
