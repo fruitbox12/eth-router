@@ -147,27 +147,28 @@
 
 - name: Activate munin plugins for geth monitoring
   file:
-    src: "/usr/share/munin/plugins/{{ item }}"
+    src: "/usr/share/munin/plugins/{{ item }}.py"
     dest: "/etc/munin/plugins/{{ item }}"
     owner: root
     group: root
     state: link
   with_items:
-    - block_number.py
-    - peer_count.py
+    - block_number
+    - peer_count
 
 - name: Enable munin alerting based on load and Geth peers
-  lineinfile:
+  blockinfile:
     path: /etc/munin/plugin-conf.d/munin-node
-    line: "{{ item }}"
-  with_items:
-      - "[load]"
-      - "env.MUNIN_LIBDIR /usr/share/munin/"
-      - "env.load_warning 2"
-      - "env.load_critical 4"
-      - ""
-      - "[peer_count]"
-      - "user root"
+    marker_begin: ""
+    marker_end: ""
+    block: |
+      [load]
+      env.MUNIN_LIBDIR /usr/share/munin/
+      env.load_warning 2
+      env.load_critical 4
+      
+      [peer_count]
+      user root
 
 - name: Install PagerDuty client for munin
   template:
@@ -180,16 +181,14 @@
 - name: Enable PagerDuty notifications for the Geth host
   lineinfile:
     path: /etc/munin/munin-conf.d/hosts.conf
-    line: "{{ item }}"
-  with_items:
-    - "contacts pagerduty"
+    insertafter: "use_node_name yes"
+    line: "    contacts pagerduty"
   notify: Restart Munin
 
 - name: Enable PagerDuty notifications based on munin metrics
-  lineinfile:
+  blockinfile:
     path: /etc/munin/munin.conf
-    line: "{{ item }}"
-  with_items:
-    - "contact.pagerduty.command /usr/local/bin/pagerduty_munin.py {{ pagerduty_integration_key }}"
-    - "contact.pagerduty.always_send critical"
+    block: |
+      contact.pagerduty.command /usr/local/bin/pagerduty_munin.py
+      contact.pagerduty.always_send critical
   notify: Restart Munin
