@@ -22,6 +22,8 @@ def usage(out=print):
 def output_config(out=print):
     out("graph_title {0}".format(title))
     out("peers.label {0}".format(description))
+    out("peers.warning 3:")
+    out("peers.critical 1:")
 
 def output_values(out=print, fetch=urlopen):
     numberOfPeers = "0x0"
