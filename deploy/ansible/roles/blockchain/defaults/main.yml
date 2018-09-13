@@ -1,3 +1,5 @@
+# The PagerDuty integration key
+pagerduty_integration_key: ""
 # The host to establish tunnels to
 proxy_hostname: "rpc.blockchaindevlabs.com"
 tunnel_user: "ubuntu"

@@ -35,7 +35,7 @@ class TestOutputMethods(unittest.TestCase):
         output_config(output.write)
 
         output.seek(0)
-        self.assertEqual("graph_title Geth Peerspeers.label Number of connected peers",
+        self.assertEqual("graph_title Geth Peerspeers.label Number of connected peerspeers.warning 3:peers.critical 1:",
             output.read())
 
 if __name__ == "__main__":
