@@ -156,8 +156,21 @@
     - block_number.py
     - peer_count.py
 
+- name: Enable munin alerting based on load and Geth peers
+  lineinfile:
+    path: /etc/munin/plugin-conf.d/munin-node
+    line: "{{ item }}"
+  with_items:
+      - "[load]"
+      - "env.MUNIN_LIBDIR /usr/share/munin/"
+      - "env.load_warning 2"
+      - "env.load_critical 4"
+      - ""
+      - "[peer_count]"
+      - "user root"
+
 - name: Install PagerDuty client for munin
-  copy:
+  template:
     src: "pagerduty_munin.py"
     dest: "/usr/local/bin/pagerduty_munin.py"
     owner: root
@@ -169,10 +182,6 @@
     path: /etc/munin/munin-conf.d/hosts.conf
     line: "{{ item }}"
   with_items:
-    - "peers.warning 2:"
-    - "peers.critical 0:"
-    - "load.warning 0.2"
-    - "load.critical 0.4"
     - "contacts pagerduty"
   notify: Restart Munin
 

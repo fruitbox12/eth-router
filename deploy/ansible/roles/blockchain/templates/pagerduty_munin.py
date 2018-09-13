@@ -4,6 +4,7 @@ try:
     import json
 except ImportError:
     import simplejson as json
+
 import sys
 import urllib.request
 import urllib.error
@@ -94,18 +95,16 @@ def parse(txt):
     return events
 
 def main():
-    if len(sys.argv) < 2:
-        sys.stderr.write("Service key required as first argument\n")
-        sys.exit(1)
+    service_key = "{{ pagerduty_integration_key }}"
 
-    service_key = sys.argv[1]
+    if len(sys.argv) == 2:
+        service_key = sys.argv[1]
 
     alert = sys.stdin.read()
     hosts = parse(alert)
 
     pg = PagerDuty(service_key)
     for key, statuses in hosts.items():
-        #print(key, statuses)
         incident_key = "/".join(key)
         group, host, graph = key
         for status, values in statuses.items():
@@ -118,15 +117,14 @@ def main():
                         graph = graph,
                         name = vname,
                         value = value)
-                #print(description)
                 if status == "OK":
                     pg.resolve(incident_key=incident_key, description=description)
                 elif status == "WARNING":
                     pg.trigger(incident_key=incident_key, description=description)
                 elif status == "CRITICAL":
                     pg.trigger(incident_key=incident_key, description=description)
-                elif status == "UNKNOWN":
-                    pg.trigger(incident_key=incident_key, description=description)
+                #elif status == "UNKNOWN":
+                #    pg.trigger(incident_key=incident_key, description=description)
 
 if __name__ == "__main__":
     main()
