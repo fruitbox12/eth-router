@@ -42,7 +42,7 @@ def output_config():
     print("\n".join(endpoints))
 
 def get_value(rpcHost="QSP"):
-    currentBlock = ""
+    currentBlock = "0x0"
     try:
         req = Request(rpcHttpEndpoints[rpcHost], rpcPayload.encode())
         req.add_header("Content-Type", "application/json")
