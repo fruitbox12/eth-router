@@ -1,41 +1,49 @@
 #!/usr/bin/env python3
 
 from eth.block_number import *
-from io import StringIO, BytesIO
-import unittest
+from io import StringIO 
+from unittest import TestCase
+from unittest import main as unittestMain
+from unittest.mock import Mock, patch
 
-class TestOutputMethods(unittest.TestCase):
+class TestOutputMethods(TestCase):
 
-    def test_usage(self):
-        output = StringIO()
+    @patch('sys.stdout', new_callable=StringIO)
+    def test_usage(self, mock_stdout):
+        usage()
 
-        usage(output.write)
+        self.assertEqual("Munin plugin to report Geth Current Block\n\n./block_number.py config - Display munin chart params\n./block_number.py - Fetch values and print to screen",
+            mock_stdout.getvalue().strip())
 
-        output.seek(0)
-        self.assertEqual("Munin plugin to report Geth Current Block./block_number.py config - Display munin chart params./block_number.py - Fetch values and print to screen",
-            output.read())
+    @patch('eth.block_number.urlopen')
+    def test_metrics_value(self, mock_urlopen):
+        readMock = Mock()
+        readMock.read.return_value = '{ "result": "0x2A" }'.encode() 
+        mock_urlopen.return_value = readMock
 
-    def test_metrics_output(self):
-        output = StringIO()
+        output = get_value("QSP")
 
-        mockOutput = BytesIO()
-        mockOutput.write('{ "result": "0x2A" }'.encode())
-        mockOutput.seek(0)
-        mockCall = lambda r: mockOutput
-        output_values(output.write, mockCall)
+        self.assertEqual("42",
+            output)
 
-        output.seek(0)
-        self.assertEqual("block.value 42",
-            output.read())
+    @patch('sys.stdout', new_callable=StringIO)
+    @patch('eth.block_number.urlopen')
+    def test_metrics_output(self, mock_urlopen, mock_stdout):
+        readMock = Mock()
+        readMock.read.return_value = '{ "result": "0x2A" }'.encode() 
+        mock_urlopen.return_value = readMock
 
-    def test_config_output(self):
-        output = StringIO()
+        output_values()
 
-        output_config(output.write)
+        self.assertEqual("QSP.value 42\nInfura.value 42\nEtherscan.value 42",
+            mock_stdout.getvalue().strip())
 
-        output.seek(0)
-        self.assertEqual("graph_title Geth Current Blockblock.label The latest available block",
-            output.read())
+    @patch('sys.stdout', new_callable=StringIO)
+    def test_config_output(self, mock_stdout):
+        output_config()
+
+        self.assertEqual("graph_title Geth Current Block\ngraph_category Ethereum\nQSP.label Highest block on QSP\nInfura.label Highest block on Infura\nEtherscan.label Highest block on Etherscan",
+            mock_stdout.getvalue().strip())
 
 if __name__ == "__main__":
-    unittest.main()
+    unittestMain()

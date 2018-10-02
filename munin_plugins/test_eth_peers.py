@@ -3,40 +3,37 @@
 from eth.peer_count import *
 import sys
 from io import StringIO, BytesIO
-import unittest
+from unittest import TestCase
+from unittest import main as unittestMain
+from unittest.mock import Mock, patch
 
-class TestOutputMethods(unittest.TestCase):
+class TestOutputMethods(TestCase):
 
-    def test_usage(self):
-        output = StringIO()
+    @patch('sys.stdout', new_callable=StringIO)
+    def test_usage(self, mock_stdout):
+        usage()
 
-        usage(output.write)
+        self.assertEqual("Munin plugin to report Geth Peers\n\n./peer_count.py config - Display munin chart params\n./peer_count.py - Fetch values and print to screen",
+            mock_stdout.getvalue().strip())
 
-        output.seek(0)
-        self.assertEqual("Munin plugin to report Geth Peers./peer_count.py config - Display munin chart params./peer_count.py - Fetch values and print to screen",
-            output.read())
+    @patch('sys.stdout', new_callable=StringIO)
+    @patch('eth.peer_count.urlopen')
+    def test_metrics_output(self, mock_urlopen, mock_stdout):
+        readMock = Mock()
+        readMock.read.return_value = '{ "result": "0x2A" }'.encode()
+        mock_urlopen.return_value = readMock
 
-    def test_metrics_output(self):
-        output = StringIO()
+        output_values()
 
-        mockOutput = BytesIO()
-        mockOutput.write('{ "result": "0x2A" }'.encode())
-        mockOutput.seek(0)
-        mockCall = lambda r: mockOutput
-        output_values(output.write, mockCall)
-
-        output.seek(0)
         self.assertEqual("peers.value 42",
-            output.read())
+            mock_stdout.getvalue().strip())
 
-    def test_config_output(self):
-        output = StringIO()
+    @patch('sys.stdout', new_callable=StringIO)
+    def test_config_output(self, mock_stdout):
+        output_config()
 
-        output_config(output.write)
-
-        output.seek(0)
-        self.assertEqual("graph_title Geth Peerspeers.label Number of connected peerspeers.warning 3:peers.critical 1:",
-            output.read())
+        self.assertEqual("graph_title Geth Peers\npeers.label Number of connected peers\npeers.warning 3:\npeers.critical 1:",
+            mock_stdout.getvalue().strip())
 
 if __name__ == "__main__":
-    unittest.main()
+    unittestMain()

@@ -13,29 +13,29 @@ rpcPayload = '{"jsonrpc": "2.0", "method": "net_peerCount", "params": [], "id": 
 title = "Geth Peers"
 description = "Number of connected peers"
 
-def usage(out=print):
-    out("Munin plugin to report {0}".format(title))
-    out("")
-    out("./peer_count.py config - Display munin chart params")
-    out("./peer_count.py - Fetch values and print to screen")
+def usage():
+    print("Munin plugin to report {0}".format(title))
+    print("")
+    print("./peer_count.py config - Display munin chart params")
+    print("./peer_count.py - Fetch values and print to screen")
 
-def output_config(out=print):
-    out("graph_title {0}".format(title))
-    out("peers.label {0}".format(description))
-    out("peers.warning 3:")
-    out("peers.critical 1:")
+def output_config():
+    print("graph_title {0}".format(title))
+    print("peers.label {0}".format(description))
+    print("peers.warning 3:")
+    print("peers.critical 1:")
 
-def output_values(out=print, fetch=urlopen):
+def output_values():
     numberOfPeers = "0x0"
     try:
         req = Request(rpcHttpEndpoint, rpcPayload.encode())
         req.add_header("Content-Type", "application/json")
-        numberOfPeers = loads(fetch(req).read().decode()).get('result')
+        numberOfPeers = loads(urlopen(req).read().decode()).get('result')
     except ConnectionRefusedError:
         pass
     except URLError:
         pass
-    out("peers.value {0}".format(int(numberOfPeers, 16)))
+    print("peers.value {0}".format(int(numberOfPeers, 16)))
 
 if __name__ == "__main__":
 
