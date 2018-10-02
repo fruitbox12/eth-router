@@ -27,11 +27,16 @@ class TestOutputMethods(TestCase):
             output)
 
     @patch('sys.stdout', new_callable=StringIO)
+    @patch('eth.block_number.Request')
     @patch('eth.block_number.urlopen')
-    def test_metrics_output(self, mock_urlopen, mock_stdout):
+    def test_metrics_output(self, mock_urlopen, mock_Request, mock_stdout):
         readMock = Mock()
         readMock.read.return_value = '{ "result": "0x2A" }'.encode() 
         mock_urlopen.return_value = readMock
+
+        reqMock = Mock()
+        reqMock.add_header.return_value = None
+        mock_Request.return_value = reqMock
 
         output_values()
 

@@ -5,22 +5,14 @@ from urllib.request import Request, urlopen
 from urllib.error import URLError
 from json import loads
 
-# Need some hackish checking to see if the 
-# template values are unchanged to allow pre-deploy testing
-isUnfilledTemplate = lambda s: "{{" in s
-
 qspDefault = "http://127.0.0.1:8547"
 infuraDefault = "{{ infura_rpc_string }}"
 etherscanDefault = "{{ etherscan_rpc_string }}"
 
-# Default to QSP default is strings are still templates
-infura = qspDefault if isUnfilledTemplate(infuraDefault) else infuraDefault
-etherscan = qspDefault if isUnfilledTemplate(etherscanDefault) else etherscanDefault
-
 rpcHttpEndpoints = {
     "QSP" :  qspDefault,
-    "Infura" : infura,
-    "Etherscan" : etherscan
+    "Infura" : infuraDefault,
+    "Etherscan" : etherscanDefault
 }
 
 rpcPayload = '{"jsonrpc": "2.0", "method": "eth_blockNumber", "params": [], "id": 0}'
