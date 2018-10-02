@@ -32,7 +32,7 @@ class TestOutputMethods(TestCase):
     def test_config_output(self, mock_stdout):
         output_config()
 
-        self.assertEqual("graph_title Geth Peers\npeers.label Number of connected peers\npeers.warning 3:\npeers.critical 1:",
+        self.assertEqual("graph_title Geth Peers\ngraph_category Ethereum\npeers.label Number of connected peers\npeers.warning 3:\npeers.critical 1:",
             mock_stdout.getvalue().strip())
 
 if __name__ == "__main__":

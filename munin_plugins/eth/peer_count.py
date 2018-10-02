@@ -12,6 +12,7 @@ rpcPayload = '{"jsonrpc": "2.0", "method": "net_peerCount", "params": [], "id": 
 
 title = "Geth Peers"
 description = "Number of connected peers"
+category = "Ethereum"
 
 def usage():
     print("Munin plugin to report {0}".format(title))
@@ -21,6 +22,7 @@ def usage():
 
 def output_config():
     print("graph_title {0}".format(title))
+    print("graph_category {0}".format(category))
     print("peers.label {0}".format(description))
     print("peers.warning 3:")
     print("peers.critical 1:")
