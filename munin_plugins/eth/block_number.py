@@ -9,7 +9,7 @@ from json import loads
 # template values are unchanged to allow pre-deploy testing
 isUnfilledTemplate = lambda s: "{{" in s
 
-qspDefault = "http://127.0.0.1:8547"
+qspDefault =  "http://127.0.0.1:8547"
 infuraDefault = "{{ infura_rpc_string }}"
 etherscanDefault = "{{ etherscan_rpc_string }}"
 
