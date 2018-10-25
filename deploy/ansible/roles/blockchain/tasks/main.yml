@@ -135,7 +135,7 @@
   apt: pkg=python3 state=present update_cache=true
 
 - name: Install munin plugins for geth monitoring
-  copy:
+  template:
     src: "{{ item }}"
     dest: "/usr/share/munin/plugins/{{ item }}"
     owner: root
@@ -144,6 +144,9 @@
   with_items:
     - block_number.py 
     - peer_count.py
+  vars:
+    - infura_rpc: "{{ infura_rpc_string }}"
+    - etherscan_rpc: "{{ etherscan_rpc_string }}"
 
 - name: Activate munin plugins for geth monitoring
   file:
@@ -169,6 +172,7 @@
       
       [peer_count]
       user root
+  notify: Restart Munin
 
 - name: Install PagerDuty client for munin
   template:
@@ -178,11 +182,18 @@
     group: root
     mode: 0755
 
-- name: Enable PagerDuty notifications for the Geth host
+- name: Set correct host name for munin
   lineinfile:
-    path: /etc/munin/munin-conf.d/hosts.conf
-    insertafter: "use_node_name yes"
-    line: "    contacts pagerduty"
+    path: /etc/munin/munin-node.conf
+    line: "host_name {{ proxy_hostname }}"
+  notify: Restart Munin
+
+- name: Enable PagerDuty notifications for the Geth host
+  template:
+    src: "hosts.conf"
+    dest: /etc/munin/munin-conf.d/hosts.conf
+  vars:
+    - hostname: "{{ proxy_hostname }}"
   notify: Restart Munin
 
 - name: Enable PagerDuty notifications based on munin metrics
