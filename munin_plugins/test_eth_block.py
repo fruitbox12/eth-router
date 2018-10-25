@@ -47,7 +47,7 @@ class TestOutputMethods(TestCase):
     def test_config_output(self, mock_stdout):
         output_config()
 
-        self.assertEqual("graph_title Geth Current Block\ngraph_category Ethereum\nQSP.label Highest block on QSP\nInfura.label Highest block on Infura\nEtherscan.label Highest block on Etherscan",
+        self.assertEqual("graph_title Geth Current Block\ngraph_category Ethereum\ngraph_printf %.6lf\nQSP.label Highest block on QSP\nInfura.label Highest block on Infura\nEtherscan.label Highest block on Etherscan",
             mock_stdout.getvalue().strip())
 
 if __name__ == "__main__":

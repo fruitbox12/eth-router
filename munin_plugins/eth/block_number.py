@@ -30,6 +30,7 @@ def usage():
 def output_config():
     print("graph_title {0}".format(title))
     print("graph_category {0}".format(category))
+    print("graph_printf %.6lf")
     endpoints = ["{0}.label Highest block on {0}".format(h) for h in rpcHttpEndpoints.keys()]
     print("\n".join(endpoints))
 
