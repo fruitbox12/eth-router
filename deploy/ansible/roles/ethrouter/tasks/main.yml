@@ -56,9 +56,9 @@
   become_user: "ubuntu"
   notify: Restart Proxy
 
-- name: Copy tokens data
+- name: Copy tokens data from 1Password secure note to remote tokens config file
   copy:
-    src: production.json
+    content: "{{ lookup('onepassword_raw', 'Secure RPC tokens').details.notesPlain }}"
     dest: "/home/ubuntu/proxy/src/config/tokens/production.json"
     owner: "ubuntu"
     group: "ubuntu"

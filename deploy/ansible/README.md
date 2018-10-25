@@ -4,6 +4,16 @@
 
 This role contains encrypted secrets. There is a master key for the vault in the secrets repository. Ask your org's Head of Security or Head of Infrastructure for access to this information. When you have this information, you can run the playbook as documented above.
 
+## 1Password
+
+The Ansible roles make use of secrets it sources from 1Password. In order for this to function, the `op` command line interface is required and can be found [here](https://support.1password.com/command-line-getting-started).
+
+    $ eval $(op signin https://quantstamp.1Password.com <YOU>@quantstamp.com <YOU_SECRET_KEY>)
+
+On subsequent sign-ins, only the following is necessary:
+
+    $ eval $(op signin quantstamp)
+
 ## TLS Security
 The playbook uses the [certbot role](https://github.com/geerlingguy/ansible-role-certbot) to enable automated SSL certificate signing. You are required to run the Terraform template to set up DNS for this automation to succeed. The role uses the `standalone` validation method, which depends on DNS resolution to point to the server you are configuring and for ports 80 and 443 to be open and available.
 
